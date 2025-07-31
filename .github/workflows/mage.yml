@@ -16,3 +16,4 @@ jobs:
           go-version-file: go.mod
       - run: go install github.com/magefile/mage@latest
       - run: mage -v
+      - run: git diff --exit-code
