@@ -15,6 +15,7 @@ func Install() error {
 		"sigs.k8s.io/controller-tools/cmd/controller-gen",
 		"golang.org/x/tools/cmd/goimports",
 		"mvdan.cc/gofumpt",
+		"github.com/google/ko",
 	}
 	for _, tool := range tools {
 		if err := sh.Run("go", "install", fmt.Sprintf("%s@latest", tool)); err != nil {
@@ -28,7 +29,8 @@ func Install() error {
 func All() {
 	mg.SerialDeps(
 		Install,
-		Format.Go,
 		Build.ControllerGenCRD,
+		Build.ControllerGenObject,
+		Format.Go,
 	)
 }

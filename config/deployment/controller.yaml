@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pipeline-controller
+  namespace: kube-system
+  labels:
+    app: pipeline-controller
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pipeline-controller
+  template:
+    metadata:
+      labels:
+        app: pipeline-controller
+    spec:
+      containers:
+        - name: manager
+          image: kind.local/pipelinecontroller:latest
+          imagePullPolicy: IfNotPresent
+          command:
+            - /ko-app/pipelinecontroller
