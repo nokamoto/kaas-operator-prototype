@@ -5,6 +5,8 @@ on:
     paths:
       - '**/*.md'
   push:
+    branches:
+      - main
     paths:
       - '**/*.md'
 
