@@ -21,3 +21,13 @@ func (Format) Go() error {
 	}
 	return nil
 }
+
+// Proto formats the Protocol Buffers files in the project.
+func (Format) Proto() error {
+	return sh.RunV("buf", "format", "-w", ".")
+}
+
+// YAML formats the YAML files in the project.
+func (Format) YAML() error {
+	return sh.RunV("yamlfmt", ".")
+}

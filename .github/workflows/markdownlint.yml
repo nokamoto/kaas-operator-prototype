@@ -1,5 +1,4 @@
 name: Lint Markdown
-
 on:
   pull_request:
     paths:
@@ -9,7 +8,6 @@ on:
       - main
     paths:
       - '**/*.md'
-
 jobs:
   markdownlint:
     runs-on: ubuntu-latest

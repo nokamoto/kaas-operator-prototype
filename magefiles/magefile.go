@@ -17,6 +17,10 @@ func Install() error {
 		"mvdan.cc/gofumpt",
 		"github.com/google/ko",
 		"sigs.k8s.io/controller-runtime/tools/setup-envtest",
+		"github.com/bufbuild/buf/cmd/buf",
+		"google.golang.org/protobuf/cmd/protoc-gen-go",
+		"connectrpc.com/connect/cmd/protoc-gen-connect-go",
+		"github.com/google/yamlfmt/cmd/yamlfmt",
 	}
 	for _, tool := range tools {
 		if err := sh.Run("go", "install", fmt.Sprintf("%s@latest", tool)); err != nil {
@@ -33,7 +37,10 @@ func All() {
 		Build.ControllerGenCRD,
 		Build.ControllerGenObject,
 		Build.ControllerGenRBAC,
+		Build.Buf,
+		Format.Proto,
 		Format.Go,
+		Format.YAML,
 		Test,
 	)
 }

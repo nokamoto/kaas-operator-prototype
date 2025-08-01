@@ -21,3 +21,8 @@ func (Build) ControllerGenObject() error {
 func (Build) ControllerGenRBAC() error {
 	return sh.RunV("controller-gen", "rbac:roleName=manager-role", "paths=./...", "output:rbac:dir=./config/rbac")
 }
+
+// Buf generates the go code from the protobuf definitions using Buf.
+func (Build) Buf() error {
+	return sh.RunV("buf", "generate")
+}
