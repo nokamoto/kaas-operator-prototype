@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/nokamoto/kaas-operator-prototype/api/v1alpha1"
+	"github.com/nokamoto/kaas-operator-prototype/api/crd/v1alpha1"
 	"github.com/nokamoto/kaas-operator-prototype/internal/controller/pipeline"
 	"k8s.io/apimachinery/pkg/runtime"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"

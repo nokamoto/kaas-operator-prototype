@@ -1,0 +1,55 @@
+syntax = "proto3";
+
+package api.proto.v1alpha1;
+
+import "api/proto/v1alpha1/longrunningoperation.proto";
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/nokamoto/kaas-operator-prototype/pkg/api/proto/v1alpha1;v1alpha1";
+
+service ClusterService {
+  // CreateCluster creates a new cluster.
+  // It returns a LongRunningOperation that can be used to track the progress of the operation.
+  rpc CreateCluster(CreateClusterRequest) returns (LongRunningOperation);
+  // GetCluster retrieves the details of a specific cluster by its name.
+  rpc GetCluster(GetClusterRequest) returns (Cluster);
+  // ListClusters lists all clusters.
+  rpc ListClusters(google.protobuf.Empty) returns (ListClustersResponse);
+  // DeleteCluster deletes a specific cluster by its name.
+  // It returns a LongRunningOperation that can be used to track the progress of the operation.
+  rpc DeleteCluster(DeleteClusterRequest) returns (LongRunningOperation);
+}
+
+message Cluster {
+  // Required. The unique identifier for the cluster.
+  // This field is read-only and is set by the system.
+  string name = 1;
+  // display_name is a human-readable name for the cluster.
+  // It can be used for display purposes in user interfaces.
+  // This field is optional and can be set by the user.
+  string display_name = 2;
+  // description provides additional information about the cluster.
+  // It can be used to describe the purpose or configuration of the cluster.
+  // This field is optional and can be set by the user.
+  string description = 3;
+}
+
+message CreateClusterRequest {
+  // Required. The cluster to create.
+  Cluster cluster = 1;
+}
+
+message GetClusterRequest {
+  // Required. The name of the cluster to retrieve.
+  string name = 1;
+}
+
+message ListClustersResponse {
+  // A list of clusters.
+  repeated Cluster clusters = 1;
+}
+
+message DeleteClusterRequest {
+  // Required. The name of the cluster to delete.
+  string name = 1;
+}

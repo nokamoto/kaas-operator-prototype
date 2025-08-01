@@ -1,11 +1,9 @@
 name: Run Mage
-
 on:
   push:
     branches:
       - main
   pull_request:
-
 jobs:
   mage:
     runs-on: ubuntu-latest

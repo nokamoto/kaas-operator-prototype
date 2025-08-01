@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/nokamoto/kaas-operator-prototype/api/v1alpha1"
+	"github.com/nokamoto/kaas-operator-prototype/api/crd/v1alpha1"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	corev1 "k8s.io/api/core/v1"

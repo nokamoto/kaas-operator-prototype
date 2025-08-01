@@ -3,7 +3,7 @@ package pipeline
 import (
 	"context"
 
-	"github.com/nokamoto/kaas-operator-prototype/api/v1alpha1"
+	"github.com/nokamoto/kaas-operator-prototype/api/crd/v1alpha1"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log"

@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package api.proto.v1alpha1;
+
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/nokamoto/kaas-operator-prototype/pkg/api/proto/v1alpha1;v1alpha1";
+
+service LongRunningOperationService {
+  // GetOperation retrieves the details of a long-running operation by its name.
+  rpc GetOperation(GetOperationRequest) returns (LongRunningOperation);
+  // ListOperations lists all long-running operations.
+  rpc ListOperations(google.protobuf.Empty) returns (ListOperationsResponse);
+}
+
+// LongRunningOperation represents a long-running operation in the system.
+// It is used to track the status of operations that may take a significant amount of time to complete.
+message LongRunningOperation {
+  // Required. The unique identifier for the operation.
+  // This field is read-only and is set by the system.
+  string name = 1;
+}
+
+message GetOperationRequest {
+  // Required. The name of the operation to retrieve.
+  string name = 1;
+}
+
+message ListOperationsResponse {
+  // A list of long-running operations.
+  repeated LongRunningOperation operations = 1;
+}
