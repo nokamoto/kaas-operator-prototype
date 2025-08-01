@@ -9,6 +9,9 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/log"
 )
 
+// +kubebuilder:rbac:groups=nokamoto.github.com,resources=pipelines,verbs=get;list;watch;create;update;patch;delete
+// +kubebuilder:rbac:groups=nokamoto.github.com,resources=pipelines/status,verbs=get;update;patch
+
 type PipelineReconciler struct {
 	client.Client
 }

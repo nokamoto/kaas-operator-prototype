@@ -1,6 +1,10 @@
 package main
 
 import (
+	"errors"
+	"fmt"
+	"slices"
+
 	"github.com/magefile/mage/mg"
 	"github.com/magefile/mage/sh"
 )
@@ -23,12 +27,36 @@ func (Kind) Build() error {
 	return nil
 }
 
+var (
+	configs = []string{
+		"crd",
+		"rbac",
+		"manager",
+	}
+)
+
 // Apply applies the Kubernetes manifests for local development.
 func (Kind) Apply() error {
-	return sh.RunV("kubectl", "apply", "-f", "./config/deployment")
+	for _, config := range configs {
+		if err := sh.RunV("kubectl", "apply", "-f", fmt.Sprintf("./config/%s", config)); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // Clean removes the deployed resources from the Kind cluster.
 func (Kind) Clean() error {
-	return sh.RunV("kubectl", "delete", "-f", "./config/deployment")
+	// reverse the order of configs to ensure dependencies are cleaned up first
+	reversedConfigs := make([]string, len(configs))
+	copy(reversedConfigs, configs)
+	slices.Reverse(reversedConfigs)
+	var es []error
+	for _, config := range reversedConfigs {
+		if err := sh.RunV("kubectl", "delete", "-f", fmt.Sprintf("./config/%s", config)); err != nil {
+			fmt.Printf("Error cleaning up %s: %v\n", config, err)
+			es = append(es, err)
+		}
+	}
+	return errors.Join(es...)
 }
