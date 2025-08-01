@@ -12,14 +12,14 @@ import (
 
 func TestEncoder_Encode(t *testing.T) {
 	type testcase struct {
-		name string
+		name    string
 		encoder Encoder
 		message proto.Message
-		want string
+		want    string
 	}
 	tests := []testcase{
 		{
-			name: "encode to JSON",
+			name:    "encode to JSON",
 			encoder: json,
 			message: &v1alpha1.LongRunningOperation{
 				Name: "operation-1234",
@@ -27,7 +27,7 @@ func TestEncoder_Encode(t *testing.T) {
 			want: `{"name":"operation-1234"}`,
 		},
 		{
-			name: "encode to YAML",
+			name:    "encode to YAML",
 			encoder: yaml,
 			message: &v1alpha1.LongRunningOperation{
 				Name: "operation-1234",
@@ -35,7 +35,7 @@ func TestEncoder_Encode(t *testing.T) {
 			want: "name: operation-1234\n",
 		},
 		{
-			name: "encode to text",
+			name:    "encode to text",
 			encoder: text,
 			message: &v1alpha1.LongRunningOperation{
 				Name: "operation-1234",
