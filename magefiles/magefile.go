@@ -21,6 +21,7 @@ func Install() error {
 		"google.golang.org/protobuf/cmd/protoc-gen-go",
 		"connectrpc.com/connect/cmd/protoc-gen-connect-go",
 		"github.com/google/yamlfmt/cmd/yamlfmt",
+		"go.uber.org/mock/mockgen",
 	}
 	for _, tool := range tools {
 		if err := sh.Run("go", "install", fmt.Sprintf("%s@latest", tool)); err != nil {
@@ -38,6 +39,7 @@ func All() {
 		Build.ControllerGenObject,
 		Build.ControllerGenRBAC,
 		Build.Buf,
+		Build.Mock,
 		Format.Proto,
 		Format.Go,
 		Format.YAML,
