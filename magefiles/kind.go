@@ -27,13 +27,11 @@ func (Kind) Build() error {
 	return nil
 }
 
-var (
-	configs = []string{
-		"crd",
-		"rbac",
-		"manager",
-	}
-)
+var configs = []string{
+	"crd",
+	"rbac",
+	"manager",
+}
 
 // Apply applies the Kubernetes manifests for local development.
 func (Kind) Apply() error {
