@@ -31,6 +31,7 @@ func All() {
 		Install,
 		Build.ControllerGenCRD,
 		Build.ControllerGenObject,
+		Build.ControllerGenRBAC,
 		Format.Go,
 	)
 }

@@ -9,7 +9,7 @@ type Build mg.Namespace
 
 // ControllerGenCRD generates the Custom Resource Definitions (CRDs) for the project.
 func (Build) ControllerGenCRD() error {
-	return sh.RunV("controller-gen", "rbac:roleName=manager-role", "crd", "paths=./...", "output:crd:dir=config/crd")
+	return sh.RunV("controller-gen", "crd", "paths=./...", "output:crd:dir=config/crd")
 }
 
 // ControllerGenObject generates the deep copy files for the project.
