@@ -16,6 +16,7 @@ func Install() error {
 		"golang.org/x/tools/cmd/goimports",
 		"mvdan.cc/gofumpt",
 		"github.com/google/ko",
+		"sigs.k8s.io/controller-runtime/tools/setup-envtest",
 	}
 	for _, tool := range tools {
 		if err := sh.Run("go", "install", fmt.Sprintf("%s@latest", tool)); err != nil {
@@ -33,5 +34,6 @@ func All() {
 		Build.ControllerGenObject,
 		Build.ControllerGenRBAC,
 		Format.Go,
+		Test,
 	)
 }
