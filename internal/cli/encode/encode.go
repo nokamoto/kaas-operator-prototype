@@ -39,7 +39,7 @@ func (e *Encoder) Print(cmd *cobra.Command, v proto.Message) {
 
 // Encode encodes the given protobuf message into the specified format and writes it to the provided writer.
 // It supports JSON, YAML, and text formats based on the value of the Encoder.
-func (e *Encoder) Encode(w io.Writer, v proto.Message) error {
+func (e *Encoder) Encode(w io.Writer, v proto.Message) {
 	var bytes []byte
 	var err error
 	switch *e {
@@ -50,11 +50,8 @@ func (e *Encoder) Encode(w io.Writer, v proto.Message) error {
 	default:
 		bytes, err = protoyaml.Marshal(v)
 	}
-	if err != nil {
-		return err
-	}
-	_, err = w.Write(bytes)
-	return err
+	suppressError(nil, err)
+	w.Write(bytes)
 }
 
 func (e *Encoder) String() string {
