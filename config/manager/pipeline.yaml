@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pipeline-controller-manager
+  namespace: kube-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: pipeline-manager-role-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pipeline-manager-role
+subjects:
+  - kind: ServiceAccount
+    name: pipeline-controller-manager
+    namespace: kube-system
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pipeline-controller
+  namespace: kube-system
+  labels:
+    app: pipeline-controller
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pipeline-controller
+  template:
+    metadata:
+      labels:
+        app: pipeline-controller
+    spec:
+      containers:
+        - name: manager
+          image: kind.local/pipelinecontroller:latest
+          imagePullPolicy: IfNotPresent
+          command:
+            - /ko-app/pipelinecontroller
+      serviceAccountName: pipeline-controller-manager

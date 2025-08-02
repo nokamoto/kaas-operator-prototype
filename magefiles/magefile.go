@@ -7,6 +7,11 @@ import (
 	"github.com/magefile/mage/sh"
 )
 
+var controllers = []string{
+	"pipeline",
+	"kubernetescluster",
+}
+
 var Default = All
 
 // Install installs the necessary tools for the project.
