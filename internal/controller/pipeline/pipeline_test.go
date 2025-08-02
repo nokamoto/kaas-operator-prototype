@@ -116,7 +116,7 @@ var _ = Describe("PipelineReconciler", func() {
 		Expect(cluster.ObjectMeta.Annotations[v1alpha1.KubernetesClusterAnnotationDescription]).To(Equal(description))
 	})
 
-	It("should successed if a KubernetesCluster is in running phase", func(ctx context.Context) {
+	It("should succeed if a KubernetesCluster is in running phase", func(ctx context.Context) {
 		got := v1alpha1.Pipeline{
 			ObjectMeta: metav1.ObjectMeta{
 				Name:      testName,
