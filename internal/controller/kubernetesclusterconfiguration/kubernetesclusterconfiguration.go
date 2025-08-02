@@ -5,6 +5,8 @@ import (
 	"time"
 
 	"github.com/nokamoto/kaas-operator-prototype/api/crd/v1alpha1"
+	"github.com/nokamoto/kaas-operator-prototype/internal/controller/boilerplate"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log"
@@ -16,22 +18,20 @@ import (
 
 type KubernetesClusterConfigurationReconciler struct {
 	client.Client
-	opts KubernetesClusterConfigurationReconcilerOptions
+	status *boilerplate.StatusUpdater[*v1alpha1.KubernetesClusterConfiguration, v1alpha1.KubernetesClusterConfigurationPhase]
+	opts   KubernetesClusterConfigurationReconcilerOptions
 }
 
 type KubernetesClusterConfigurationReconcilerOptions struct {
 	// PollingInterval is the interval at which the controller will requeue the reconciliation request
 	// when the KubernetesClusterConfiguration is in a non-terminal phase.
-	// If not set, it defaults to 10 seconds.
 	PollingInterval time.Duration
 }
 
 func NewKubernetesClusterConfigurationReconciler(client client.Client, opts KubernetesClusterConfigurationReconcilerOptions) *KubernetesClusterConfigurationReconciler {
-	if opts.PollingInterval == 0 {
-		opts.PollingInterval = 10 * time.Second
-	}
 	return &KubernetesClusterConfigurationReconciler{
 		Client: client,
+		status: boilerplate.NewStatusUpdater[*v1alpha1.KubernetesClusterConfiguration, v1alpha1.KubernetesClusterConfigurationPhase](client),
 		opts:   opts,
 	}
 }
@@ -39,6 +39,31 @@ func NewKubernetesClusterConfigurationReconciler(client client.Client, opts Kube
 func (r *KubernetesClusterConfigurationReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	logger := log.FromContext(ctx)
 	logger.Info("Reconciling KubernetesClusterConfiguration")
+	// Fetch the KubernetesClusterConfiguration instance
+	kubernetesClusterConfiguration := &v1alpha1.KubernetesClusterConfiguration{}
+	if err := r.Get(ctx, req.NamespacedName, kubernetesClusterConfiguration); err != nil {
+		logger.Error(err, "unable to fetch KubernetesClusterConfiguration")
+		return ctrl.Result{}, client.IgnoreNotFound(err)
+	}
+	logger = logger.WithValues("phase", kubernetesClusterConfiguration.Status.Phase)
+	switch kubernetesClusterConfiguration.Status.Phase {
+	case v1alpha1.KubernetesClusterConfigurationPhaseCreating:
+	case v1alpha1.KubernetesClusterConfigurationPhaseRunning:
+	default:
+		// If the phase is not recognized, set it to creating
+		logger.Info("KubernetesClusterConfiguration phase is not recognized, setting it to Creating")
+		if err := r.status.Update(ctx, kubernetesClusterConfiguration, v1alpha1.KubernetesClusterConfigurationPhaseCreating, &metav1.Condition{
+			Type:    string(v1alpha1.KubernetesClusterConfigurationConditionReady),
+			Status:  metav1.ConditionTrue,
+			Reason:  "KubernetesClusterConfigurationInitializing",
+			Message: "KubernetesClusterConfiguration is initializing",
+		}); err != nil {
+			logger.Error(err, "failed to update KubernetesClusterConfiguration status")
+			return ctrl.Result{}, err
+		}
+		// Requeue soon to process the Creating phase
+		return ctrl.Result{RequeueAfter: r.opts.PollingInterval}, nil
+	}
 	return ctrl.Result{}, nil
 }
 

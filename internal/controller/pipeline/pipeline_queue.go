@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/nokamoto/kaas-operator-prototype/api/crd/v1alpha1"
+	"github.com/nokamoto/kaas-operator-prototype/internal/controller/boilerplate"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -16,12 +17,16 @@ import (
 // It ensures that only one pipeline is running at a time within a namespace.
 // If no pipelines are running, it will start the next one in the queue.
 type PipelineQueueReconciler struct {
-	reconciler
+	client.Client
+	opts   PipelineReconcilerOptions
+	status *boilerplate.StatusUpdater[*v1alpha1.Pipeline, v1alpha1.PipelinePhase]
 }
 
 func NewPipelineQueueReconciler(client client.Client, opts PipelineReconcilerOptions) *PipelineQueueReconciler {
 	return &PipelineQueueReconciler{
-		reconciler: newReconciler(client, opts),
+		Client: client,
+		opts:   opts,
+		status: boilerplate.NewStatusUpdater[*v1alpha1.Pipeline, v1alpha1.PipelinePhase](client),
 	}
 }
 
@@ -49,7 +54,7 @@ func (r *PipelineQueueReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 		return ctrl.Result{RequeueAfter: r.opts.PollingInterval}, nil
 	default:
 		logger.Info("Pipeline is in an unknown phase. Set to Pending to start processing.")
-		if err := r.updateStatus(ctx, pipeline, v1alpha1.PipelinePhasePending, &metav1.Condition{
+		if err := r.status.Update(ctx, pipeline, v1alpha1.PipelinePhasePending, &metav1.Condition{
 			Type:    string(v1alpha1.PipelineConditionTypeReady),
 			Status:  metav1.ConditionTrue,
 			Reason:  "PipelinePhasePending",
@@ -97,7 +102,7 @@ func (r *PipelineQueueReconciler) reconcile(ctx context.Context, pipeline *v1alp
 		return nil
 	}
 	// if the current pipeline is the first in the queue, start processing it
-	if err := r.updateStatus(ctx, pipeline, v1alpha1.PipelinePhaseRunning, &metav1.Condition{
+	if err := r.status.Update(ctx, pipeline, v1alpha1.PipelinePhaseRunning, &metav1.Condition{
 		Type:    string(v1alpha1.PipelineConditionTypeReady),
 		Status:  metav1.ConditionTrue,
 		Reason:  "PipelinePhaseRunning",

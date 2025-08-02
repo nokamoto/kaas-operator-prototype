@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/nokamoto/kaas-operator-prototype/api/crd/v1alpha1"
+	"github.com/nokamoto/kaas-operator-prototype/internal/controller/boilerplate"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -14,12 +15,16 @@ import (
 // PipelineReconciler is responsible for running cluster creation pipelines.
 // If the pipeline is in running phase, it will create a KubernetesCluster resource and wait for it to be in the running phase.
 type PipelineReconciler struct {
-	reconciler
+	client.Client
+	opts   PipelineReconcilerOptions
+	status *boilerplate.StatusUpdater[*v1alpha1.Pipeline, v1alpha1.PipelinePhase]
 }
 
 func NewPipelineReconciler(client client.Client, opts PipelineReconcilerOptions) *PipelineReconciler {
 	return &PipelineReconciler{
-		reconciler: newReconciler(client, opts),
+		Client: client,
+		opts:   opts,
+		status: boilerplate.NewStatusUpdater[*v1alpha1.Pipeline, v1alpha1.PipelinePhase](client),
 	}
 }
 
@@ -50,7 +55,7 @@ func (r *PipelineReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 	}
 
 	// Update the Pipeline status to indicate that the KubernetesCluster is running
-	if err := r.updateStatus(ctx, pipeline, v1alpha1.PipelinePhaseSucceeded, &metav1.Condition{
+	if err := r.status.Update(ctx, pipeline, v1alpha1.PipelinePhaseSucceeded, &metav1.Condition{
 		Type:    string(v1alpha1.PipelineConditionTypeReady),
 		Status:  metav1.ConditionTrue,
 		Reason:  "KubernetesClusterRunning",
@@ -67,7 +72,7 @@ func (r *PipelineReconciler) forKubernetesCluster(ctx context.Context, req ctrl.
 	logger := log.FromContext(ctx)
 	// Check whether the KubernetesCluster name is set
 	if pipeline.Spec.Cluster.Name == "" {
-		if err := r.updateStatus(ctx, pipeline, v1alpha1.PipelinePhaseFailed, &metav1.Condition{
+		if err := r.status.Update(ctx, pipeline, v1alpha1.PipelinePhaseFailed, &metav1.Condition{
 			Type:    string(v1alpha1.PipelineConditionTypeFailed),
 			Status:  metav1.ConditionFalse,
 			Reason:  "ValidationFailed",

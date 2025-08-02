@@ -34,10 +34,31 @@ const (
 	KubernetesClusterConfigurationPhaseRunning KubernetesClusterConfigurationPhase = "Running"
 )
 
+type KubernetesClusterConfigurationConditionType string
+
+const (
+	// KubernetesClusterConfigurationConditionReady indicates that the configuration is ready.
+	KubernetesClusterConfigurationConditionReady KubernetesClusterConfigurationConditionType = "Ready"
+	// KubernetesClusterConfigurationConditionFailed indicates that the configuration has failed.
+	KubernetesClusterConfigurationConditionFailed KubernetesClusterConfigurationConditionType = "Failed"
+)
+
 type KubernetesClusterConfigurationStatus struct {
 	Phase          KubernetesClusterConfigurationPhase `json:"phase,omitempty"`
 	Conditions     []metav1.Condition                  `json:"conditions,omitempty"`
 	LastSyncedTime metav1.Time                         `json:"lastSyncedTime,omitempty"`
+}
+
+func (obj *KubernetesClusterConfiguration) SetPhase(s string) {
+	obj.Status.Phase = KubernetesClusterConfigurationPhase(s)
+}
+
+func (obj *KubernetesClusterConfiguration) AddCondition(condition metav1.Condition) {
+	obj.Status.Conditions = append(obj.Status.Conditions, condition)
+}
+
+func (obj *KubernetesClusterConfiguration) SetLastSyncedTime(t metav1.Time) {
+	obj.Status.LastSyncedTime = t
 }
 
 // +kubebuilder:object:root=true
