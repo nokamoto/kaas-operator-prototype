@@ -15,16 +15,22 @@ import (
 // +kubebuilder:rbac:groups=nokamoto.github.com,resources=pipelines/status,verbs=get;update;patch
 // +kubebuilder:rbac:groups=nokamoto.github.com,resources=kubernetesclusters,verbs=get;list;watch;create;update;patch;delete
 
-var pollingInterval = 10 * time.Second
+type PipelineReconcilerOptions struct {
+	// PollingInterval is the interval at which the controller will requeue the reconciliation request
+	// when the Pipeline is in a non-terminal phase.
+	//
+	// If not set, it defaults to 10 seconds.
+	PollingInterval time.Duration
+}
 
 type reconciler struct {
 	client.Client
-	now func() metav1.Time
+	opts PipelineReconcilerOptions
 }
 
 func (r *reconciler) updateStatus(ctx context.Context, pipeline *v1alpha1.Pipeline, phase v1alpha1.PipelinePhase, cond *metav1.Condition) error {
 	logger := log.FromContext(ctx)
-	now := r.now()
+	now := metav1.Now()
 	pipeline.Status.Phase = phase
 	pipeline.Status.LastSyncedTime = now
 	if cond != nil {

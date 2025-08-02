@@ -17,11 +17,11 @@ type PipelineReconciler struct {
 	reconciler
 }
 
-func NewPipelineReconciler(client client.Client) *PipelineReconciler {
+func NewPipelineReconciler(client client.Client, opts PipelineReconcilerOptions) *PipelineReconciler {
 	return &PipelineReconciler{
 		reconciler: reconciler{
 			Client: client,
-			now:    metav1.Now,
+			opts:   opts,
 		},
 	}
 }
@@ -77,12 +77,12 @@ func (r *PipelineReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 			return ctrl.Result{}, fmt.Errorf("failed to create KubernetesCluster: %w", err)
 		}
 		// immediately requeue to poll the status of the KubernetesCluster
-		return ctrl.Result{RequeueAfter: pollingInterval}, nil
+		return ctrl.Result{RequeueAfter: r.opts.PollingInterval}, nil
 	}
 	// KubernetesCluster exists, check if it is in running phase
 	if kubernetesCluster.Status.Phase != v1alpha1.KubernetesClusterPhaseRunning {
 		logger.Info("KubernetesCluster is not running. Waiting for it to be ready.", "phase", kubernetesCluster.Status.Phase)
-		return ctrl.Result{RequeueAfter: pollingInterval}, nil
+		return ctrl.Result{RequeueAfter: r.opts.PollingInterval}, nil
 	}
 	logger.Info("KubernetesCluster is running", "name", kubernetesCluster.Name)
 	// Update the Pipeline status to indicate that the KubernetesCluster is running

@@ -1,14 +1,14 @@
-package pipeline
+package v1alpha1test
 
 import (
 	"context"
 	"path/filepath"
 	"testing"
+	"time"
 
 	"github.com/nokamoto/kaas-operator-prototype/api/crd/v1alpha1"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -19,13 +19,13 @@ import (
 
 func TestPipelineReconciler(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "PipelineReconciler Suite")
+	RunSpecs(t, "Controller Suite v1alpha1")
 }
 
 var (
-	testEnv   *envtest.Environment
-	k8sClient client.Client
-	now       = metav1.Now()
+	testEnv         *envtest.Environment
+	k8sClient       client.Client
+	pollingInterval = 1 * time.Second
 )
 
 var _ = BeforeSuite(func() {

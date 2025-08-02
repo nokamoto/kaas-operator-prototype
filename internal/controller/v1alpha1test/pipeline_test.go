@@ -1,9 +1,10 @@
-package pipeline
+package v1alpha1test
 
 import (
 	"context"
 
 	"github.com/nokamoto/kaas-operator-prototype/api/crd/v1alpha1"
+	"github.com/nokamoto/kaas-operator-prototype/internal/controller/pipeline"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	corev1 "k8s.io/api/core/v1"
@@ -23,7 +24,7 @@ var _ = Describe("PipelineReconciler", func() {
 		Namespace: testNamespace,
 	}
 
-	var pipelineReconciler PipelineReconciler
+	var pipelineReconciler *pipeline.PipelineReconciler
 
 	BeforeEach(func(ctx context.Context) {
 		ns := &corev1.Namespace{}
@@ -34,14 +35,9 @@ var _ = Describe("PipelineReconciler", func() {
 		Expect(client.IgnoreAlreadyExists(err)).NotTo(HaveOccurred())
 
 		By("initializing the PipelineReconciler")
-		pipelineReconciler = PipelineReconciler{
-			reconciler: reconciler{
-				Client: k8sClient,
-				now: func() metav1.Time {
-					return now
-				},
-			},
-		}
+		pipelineReconciler = pipeline.NewPipelineReconciler(k8sClient, pipeline.PipelineReconcilerOptions{
+			PollingInterval: pollingInterval,
+		})
 	})
 
 	AfterEach(func(ctx context.Context) {

@@ -33,7 +33,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	kubernetesClusterReconciler := kubernetescluster.NewKubernetesClusterReconciler(mgr.GetClient())
+	kubernetesClusterReconciler := kubernetescluster.NewKubernetesClusterReconciler(mgr.GetClient(), kubernetescluster.KubernetesClusterReconcilerOptions{})
 	if err = kubernetesClusterReconciler.SetupWithManager(mgr); err != nil {
 		logger.Error(err, "unable to create controller", "controller", "KubernetesCluster")
 		os.Exit(1)
