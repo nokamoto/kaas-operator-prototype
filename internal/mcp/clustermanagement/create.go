@@ -35,7 +35,7 @@ func (c *CreateTool) Tool() *mcp.Tool {
 		Description: `Manage KaaS clusters.
 This tool provides create operations for KaaS clusters.
 Note:
-Cluster creation typically takes serveral minutes to complete.`,
+Cluster creation typically takes several minutes to complete.`,
 	}
 }
 
