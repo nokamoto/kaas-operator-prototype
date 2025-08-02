@@ -27,7 +27,7 @@ func NewKubernetesClusterReconciler(client client.Client) *KubernetesClusterReco
 
 func (r *KubernetesClusterReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	logger := log.FromContext(ctx)
-	logger.Info("Reconciling Pipeline")
+	logger.Info("Reconciling KubernetesCluster")
 	return ctrl.Result{}, nil
 }
 
