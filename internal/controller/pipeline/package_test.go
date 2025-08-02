@@ -25,7 +25,7 @@ func TestPipelineReconciler(t *testing.T) {
 var (
 	testEnv   *envtest.Environment
 	k8sClient client.Client
-	now = metav1.Now()
+	now       = metav1.Now()
 )
 
 var _ = BeforeSuite(func() {
@@ -68,7 +68,7 @@ var _ = AfterSuite(func() {
 })
 
 func updateStatus(ctx context.Context, pipeline *v1alpha1.Pipeline, phase v1alpha1.PipelinePhase) {
-		pipeline.Status.Phase = phase
-		err := k8sClient.Status().Update(ctx, pipeline)
-		Expect(err).NotTo(HaveOccurred(), "failed to update Pipeline status")
-	}
+	pipeline.Status.Phase = phase
+	err := k8sClient.Status().Update(ctx, pipeline)
+	Expect(err).NotTo(HaveOccurred(), "failed to update Pipeline status")
+}
