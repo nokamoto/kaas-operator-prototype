@@ -7,12 +7,10 @@ import (
 	"github.com/magefile/mage/sh"
 )
 
-var (
-	controllers = []string{
-		"pipeline",
-		"kubernetescluster",
-	}
-)
+var controllers = []string{
+	"pipeline",
+	"kubernetescluster",
+}
 
 var Default = All
 
