@@ -6,7 +6,7 @@ import (
 
 	"connectrpc.com/connect"
 	typev1alpha1 "github.com/nokamoto/kaas-operator-prototype/api/crd/v1alpha1"
-	apiv1alpah1 "github.com/nokamoto/kaas-operator-prototype/pkg/api/proto/v1alpha1"
+	apiv1alpha1 "github.com/nokamoto/kaas-operator-prototype/pkg/api/proto/v1alpha1"
 	"github.com/nokamoto/kaas-operator-prototype/pkg/api/proto/v1alpha1/v1alpha1connect"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -38,8 +38,8 @@ func New(client client, namegen namegen) *ClusterService {
 // It returns a LongRunningOperation that can be used to track the progress of the operation.
 func (c *ClusterService) CreateCluster(
 	ctx context.Context,
-	req *connect.Request[apiv1alpah1.CreateClusterRequest],
-) (*connect.Response[apiv1alpah1.LongRunningOperation], error) {
+	req *connect.Request[apiv1alpha1.CreateClusterRequest],
+) (*connect.Response[apiv1alpha1.LongRunningOperation], error) {
 	pipeline := &typev1alpha1.Pipeline{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      c.namegen.New("cluster-create"),
@@ -49,7 +49,7 @@ func (c *ClusterService) CreateCluster(
 	if err := c.client.CreatePipeline(ctx, pipeline); err != nil {
 		return nil, connect.NewError(connect.CodeUnavailable, err)
 	}
-	return connect.NewResponse(&apiv1alpah1.LongRunningOperation{
+	return connect.NewResponse(&apiv1alpha1.LongRunningOperation{
 		Name: pipeline.Name,
 	}), nil
 }
