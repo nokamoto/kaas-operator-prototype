@@ -1,0 +1,10 @@
+{
+	"servers": {
+		"kaas-mcp-server": {
+			"type": "stdio",
+			"command": "mcpserver",
+			"args": []
+		}
+	},
+	"inputs": []
+}

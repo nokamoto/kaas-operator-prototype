@@ -44,5 +44,6 @@ func All() {
 		Format.Go,
 		Format.YAML,
 		Test,
+		Build.InstallMCPServer,
 	)
 }
