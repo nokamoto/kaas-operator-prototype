@@ -41,3 +41,8 @@ func (Build) Mock() error {
 	}
 	return nil
 }
+
+// InstallMCPServer installs the MCP server binary.
+func (Build) InstallMCPServer() error {
+	return sh.RunV("go", "install", "./cmd/mcpserver")
+}
