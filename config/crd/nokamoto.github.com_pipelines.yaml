@@ -10,6 +10,8 @@ spec:
     kind: Pipeline
     listKind: PipelineList
     plural: pipelines
+    shortNames:
+      - pl
     singular: pipeline
   scope: Namespaced
   versions:

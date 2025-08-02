@@ -10,6 +10,7 @@ import (
 var controllers = []string{
 	"pipeline",
 	"kubernetescluster",
+	"kubernetesclusterconfiguration",
 }
 
 var Default = All
@@ -43,6 +44,7 @@ func All() {
 		Build.ControllerGenCRD,
 		Build.ControllerGenObject,
 		Build.ControllerGenRBAC,
+		Build.ManagerYAML,
 		Build.Buf,
 		Build.Mock,
 		Format.Proto,

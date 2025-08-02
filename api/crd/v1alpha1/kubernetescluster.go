@@ -7,6 +7,7 @@ import (
 // +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
 // +kubebuilder:resource:path=kubernetesclusters,scope=Namespaced
+// +kubebuilder:resource:shortName=kc
 type KubernetesCluster struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
