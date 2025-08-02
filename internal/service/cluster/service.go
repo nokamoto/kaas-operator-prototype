@@ -40,10 +40,17 @@ func (c *ClusterService) CreateCluster(
 	ctx context.Context,
 	req *connect.Request[apiv1alpha1.CreateClusterRequest],
 ) (*connect.Response[apiv1alpha1.LongRunningOperation], error) {
+	cluster := req.Msg.GetCluster()
 	pipeline := &typev1alpha1.Pipeline{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      c.namegen.New("cluster-create"),
 			Namespace: defaultNamespace,
+		},
+		Spec: typev1alpha1.PipelineSpec{
+			Cluster: typev1alpha1.PipelineClusterSpec{
+				DisplayName: cluster.GetDisplayName(),
+				Description: cluster.GetDescription(),
+			},
 		},
 	}
 	if err := c.client.CreatePipeline(ctx, pipeline); err != nil {
