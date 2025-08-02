@@ -61,6 +61,8 @@ func (r *KubernetesClusterConfigurationReconciler) Reconcile(ctx context.Context
 			logger.Error(err, "failed to update KubernetesClusterConfiguration status")
 			return ctrl.Result{}, err
 		}
+		// Requeue soon to process the Creating phase
+		return ctrl.Result{RequeueAfter: r.opts.PollingInterval}, nil
 	}
 	return ctrl.Result{}, nil
 }
