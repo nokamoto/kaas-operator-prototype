@@ -14,7 +14,7 @@ import (
 	"go.uber.org/mock/gomock"
 )
 
-type mockRuntime struct{
+type mockRuntime struct {
 	mock *mockv1alpha1.MockClusterServiceClient
 }
 
@@ -27,10 +27,10 @@ func TestCreateTool_Handler(t *testing.T) {
 	testDescription := "This is a test cluster."
 	testOperationName := "test-operation"
 	type testcase struct {
-		name     string
-		request  ClusterCreateRequest
-		mock func(*mockv1alpha1.MockClusterServiceClient)
-		want *mcp.CallToolResultFor[any]
+		name    string
+		request ClusterCreateRequest
+		mock    func(*mockv1alpha1.MockClusterServiceClient)
+		want    *mcp.CallToolResultFor[any]
 		wantErr error
 	}
 	tests := []testcase{
