@@ -4,14 +4,14 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.18.0
-  name: pipelines.nokamoto.github.com
+  name: kubernetesclusters.nokamoto.github.com
 spec:
   group: nokamoto.github.com
   names:
-    kind: Pipeline
-    listKind: PipelineList
-    plural: pipelines
-    singular: pipeline
+    kind: KubernetesCluster
+    listKind: KubernetesClusterList
+    plural: kubernetesclusters
+    singular: kubernetescluster
   scope: Namespaced
   versions:
   - name: v1alpha1
@@ -36,16 +36,6 @@ spec:
           metadata:
             type: object
           spec:
-            properties:
-              cluster:
-                properties:
-                  description:
-                    type: string
-                  displayName:
-                    type: string
-                  name:
-                    type: string
-                type: object
             type: object
           status:
             properties:

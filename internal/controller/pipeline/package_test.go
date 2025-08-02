@@ -1,0 +1,74 @@
+package pipeline
+
+import (
+	"context"
+	"path/filepath"
+	"testing"
+
+	"github.com/nokamoto/kaas-operator-prototype/api/crd/v1alpha1"
+	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime"
+	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
+	"sigs.k8s.io/controller-runtime/pkg/client"
+	"sigs.k8s.io/controller-runtime/pkg/envtest"
+	"sigs.k8s.io/controller-runtime/pkg/log"
+	"sigs.k8s.io/controller-runtime/pkg/log/zap"
+)
+
+func TestPipelineReconciler(t *testing.T) {
+	RegisterFailHandler(Fail)
+	RunSpecs(t, "PipelineReconciler Suite")
+}
+
+var (
+	testEnv   *envtest.Environment
+	k8sClient client.Client
+	now = metav1.Now()
+)
+
+var _ = BeforeSuite(func() {
+	By("setting up test environment")
+	log.SetLogger(zap.New(zap.WriteTo(GinkgoWriter), zap.UseDevMode(true)))
+
+	fromRoot := func(elem ...string) string {
+		return filepath.Join(append([]string{"..", "..", ".."}, elem...)...)
+	}
+
+	testEnv = &envtest.Environment{
+		CRDDirectoryPaths: []string{
+			fromRoot("config", "crd"),
+		},
+	}
+
+	cfg, err := testEnv.Start()
+	Expect(err).NotTo(HaveOccurred())
+
+	scheme := runtime.NewScheme()
+	fns := []func(*runtime.Scheme) error{
+		v1alpha1.SchemeBuilder.AddToScheme,
+		clientgoscheme.AddToScheme,
+	}
+	for _, fn := range fns {
+		err = fn(scheme)
+		Expect(err).NotTo(HaveOccurred())
+	}
+
+	k8sClient, err = client.New(cfg, client.Options{
+		Scheme: scheme,
+	})
+	Expect(err).NotTo(HaveOccurred())
+})
+
+var _ = AfterSuite(func() {
+	By("tearing down test environment")
+	err := testEnv.Stop()
+	Expect(err).NotTo(HaveOccurred())
+})
+
+func updateStatus(ctx context.Context, pipeline *v1alpha1.Pipeline, phase v1alpha1.PipelinePhase) {
+		pipeline.Status.Phase = phase
+		err := k8sClient.Status().Update(ctx, pipeline)
+		Expect(err).NotTo(HaveOccurred(), "failed to update Pipeline status")
+	}

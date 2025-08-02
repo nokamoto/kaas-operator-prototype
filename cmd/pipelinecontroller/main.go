@@ -33,9 +33,15 @@ func main() {
 		os.Exit(1)
 	}
 
-	reconciler := pipeline.NewPipelineQueueReconciler(mgr.GetClient())
-	if err = reconciler.SetupWithManager(mgr); err != nil {
+	pipelineQueueReconciler := pipeline.NewPipelineQueueReconciler(mgr.GetClient())
+	if err = pipelineQueueReconciler.SetupWithManager(mgr); err != nil {
 		logger.Error(err, "unable to create controller", "controller", "PipelineQueue")
+		os.Exit(1)
+	}
+
+	pipelineReconciler := pipeline.NewPipelineReconciler(mgr.GetClient())
+	if err = pipelineReconciler.SetupWithManager(mgr); err != nil {
+		logger.Error(err, "unable to create controller", "controller", "Pipeline")
 		os.Exit(1)
 	}
 

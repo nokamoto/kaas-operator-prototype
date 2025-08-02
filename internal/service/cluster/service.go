@@ -48,6 +48,7 @@ func (c *ClusterService) CreateCluster(
 		},
 		Spec: typev1alpha1.PipelineSpec{
 			Cluster: typev1alpha1.PipelineClusterSpec{
+				Name:        c.namegen.New("kubernetescluster"),
 				DisplayName: cluster.GetDisplayName(),
 				Description: cluster.GetDescription(),
 			},

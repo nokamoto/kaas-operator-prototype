@@ -6,6 +6,7 @@ rules:
   - apiGroups:
       - nokamoto.github.com
     resources:
+      - kubernetesclusters
       - pipelines
     verbs:
       - create
