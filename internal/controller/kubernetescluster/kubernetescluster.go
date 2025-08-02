@@ -66,11 +66,11 @@ func (r *KubernetesClusterReconciler) Reconcile(ctx context.Context, req ctrl.Re
 		return ctrl.Result{}, nil
 
 	case v1alpha1.KubernetesClusterPhaseRunning:
-		logger.Info("unimplmented yet")
+		logger.Info("unimplemented yet")
 		return ctrl.Result{}, nil
 
 	case v1alpha1.KubernetesClusterPhaseDeleting:
-		logger.Info("unimplmented yet")
+		logger.Info("unimplemented yet")
 		return ctrl.Result{RequeueAfter: r.opts.PollingInterval}, nil
 
 	default:
