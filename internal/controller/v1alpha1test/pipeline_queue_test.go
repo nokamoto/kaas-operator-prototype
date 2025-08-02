@@ -80,7 +80,7 @@ var _ = Describe("PipelineQueueReconciler", func() {
 		}
 		err := k8sClient.Create(ctx, &otherPipeline)
 		Expect(err).NotTo(HaveOccurred())
-		updateStatus(ctx, &otherPipeline, v1alpha1.PipelinePhaseRunning)
+		updateStatusPL(ctx, &otherPipeline, v1alpha1.PipelinePhaseRunning)
 
 		By("creating a test Pipeline resource and setting it to pending phase")
 		got = v1alpha1.Pipeline{
@@ -91,7 +91,7 @@ var _ = Describe("PipelineQueueReconciler", func() {
 		}
 		err = k8sClient.Create(ctx, &got)
 		Expect(err).NotTo(HaveOccurred())
-		updateStatus(ctx, &got, v1alpha1.PipelinePhasePending)
+		updateStatusPL(ctx, &got, v1alpha1.PipelinePhasePending)
 
 		By("reconciling the test Pipeline resource to check if it remains in pending phase")
 		res, err := pipelineQueueReconciler.Reconcile(ctx, reconcile.Request{
@@ -117,7 +117,7 @@ var _ = Describe("PipelineQueueReconciler", func() {
 		}
 		err := k8sClient.Create(ctx, &otherPipeline)
 		Expect(err).NotTo(HaveOccurred())
-		updateStatus(ctx, &otherPipeline, v1alpha1.PipelinePhasePending)
+		updateStatusPL(ctx, &otherPipeline, v1alpha1.PipelinePhasePending)
 
 		By("creating a test Pipeline resource and setting it to pending phase")
 		got = v1alpha1.Pipeline{
@@ -128,7 +128,7 @@ var _ = Describe("PipelineQueueReconciler", func() {
 		}
 		err = k8sClient.Create(ctx, &got)
 		Expect(err).NotTo(HaveOccurred())
-		updateStatus(ctx, &got, v1alpha1.PipelinePhasePending)
+		updateStatusPL(ctx, &got, v1alpha1.PipelinePhasePending)
 
 		By("reconciling the test Pipeline resource to check if it remains in pending phase")
 		res, err := pipelineQueueReconciler.Reconcile(ctx, reconcile.Request{
@@ -154,7 +154,7 @@ var _ = Describe("PipelineQueueReconciler", func() {
 		}
 		err := k8sClient.Create(ctx, &got)
 		Expect(err).NotTo(HaveOccurred())
-		updateStatus(ctx, &got, v1alpha1.PipelinePhasePending)
+		updateStatusPL(ctx, &got, v1alpha1.PipelinePhasePending)
 
 		By("creating another Pipeline resource in pending phase")
 		otherPipeline := v1alpha1.Pipeline{
@@ -165,7 +165,7 @@ var _ = Describe("PipelineQueueReconciler", func() {
 		}
 		err = k8sClient.Create(ctx, &otherPipeline)
 		Expect(err).NotTo(HaveOccurred())
-		updateStatus(ctx, &otherPipeline, v1alpha1.PipelinePhasePending)
+		updateStatusPL(ctx, &otherPipeline, v1alpha1.PipelinePhasePending)
 
 		By("reconciling the test Pipeline resource to check if it is set to running phase")
 		res, err := pipelineQueueReconciler.Reconcile(ctx, reconcile.Request{

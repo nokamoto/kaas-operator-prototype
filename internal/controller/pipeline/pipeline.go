@@ -36,6 +36,35 @@ func (r *PipelineReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 		logger.Info("Pipeline is not running. No action required.", "phase", pipeline.Status.Phase)
 		return ctrl.Result{}, nil
 	}
+
+	// Steps for creating a KubernetesCluster
+	end, res, err := r.forKubernetesCluster(ctx, req, pipeline)
+	if !end || err != nil {
+		return res, err
+	}
+
+	// Steps for creating a KubernetesClusterConfiguration
+	end, res, err = r.forKubernetesClusterConfiguration(ctx, req, pipeline)
+	if !end || err != nil {
+		return res, err
+	}
+
+	// Update the Pipeline status to indicate that the KubernetesCluster is running
+	if err := r.updateStatus(ctx, pipeline, v1alpha1.PipelinePhaseSucceeded, &metav1.Condition{
+		Type:    string(v1alpha1.PipelineConditionTypeReady),
+		Status:  metav1.ConditionTrue,
+		Reason:  "KubernetesClusterRunning",
+		Message: "KubernetesCluster is running and Pipeline has succeeded.",
+	}); err != nil {
+		logger.Error(err, "failed to update Pipeline status")
+		return ctrl.Result{}, fmt.Errorf("failed to update Pipeline status: %w", err)
+	}
+	logger.Info("Pipeline has succeeded")
+	return ctrl.Result{}, nil
+}
+
+func (r *PipelineReconciler) forKubernetesCluster(ctx context.Context, req ctrl.Request, pipeline *v1alpha1.Pipeline) (bool, ctrl.Result, error) {
+	logger := log.FromContext(ctx)
 	// Check whether the KubernetesCluster name is set
 	if pipeline.Spec.Cluster.Name == "" {
 		if err := r.updateStatus(ctx, pipeline, v1alpha1.PipelinePhaseFailed, &metav1.Condition{
@@ -44,10 +73,10 @@ func (r *PipelineReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 			Reason:  "ValidationFailed",
 			Message: "KubernetesCluster name is not set in the Pipeline spec.",
 		}); err != nil {
-			return ctrl.Result{}, fmt.Errorf("failed to update Pipeline status: %w", err)
+			return false, ctrl.Result{}, fmt.Errorf("failed to update Pipeline status: %w", err)
 		}
 		logger.Info("KubernetesCluster name is not set in the Pipeline spec. Failing the Pipeline.")
-		return ctrl.Result{}, nil
+		return false, ctrl.Result{}, nil
 	}
 	logger.Info("KubernetesCluster name is set", "name", pipeline.Spec.Cluster.Name)
 	// Check if the KubernetesCluster resource exists
@@ -55,7 +84,7 @@ func (r *PipelineReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 	if err := r.Get(ctx, client.ObjectKey{Name: pipeline.Spec.Cluster.Name, Namespace: req.Namespace}, &kubernetesCluster); err != nil {
 		if client.IgnoreNotFound(err) != nil {
 			logger.Error(err, "failed to get KubernetesCluster")
-			return ctrl.Result{}, fmt.Errorf("failed to get KubernetesCluster: %w", err)
+			return false, ctrl.Result{}, fmt.Errorf("failed to get KubernetesCluster: %w", err)
 		}
 		// KubernetesCluster does not exist, create it
 		kubernetesCluster = v1alpha1.KubernetesCluster{
@@ -71,29 +100,55 @@ func (r *PipelineReconciler) Reconcile(ctx context.Context, req ctrl.Request) (c
 		}
 		if err := r.Create(ctx, &kubernetesCluster); err != nil {
 			logger.Error(err, "failed to create KubernetesCluster")
-			return ctrl.Result{}, fmt.Errorf("failed to create KubernetesCluster: %w", err)
+			return false, ctrl.Result{}, fmt.Errorf("failed to create KubernetesCluster: %w", err)
 		}
 		// immediately requeue to poll the status of the KubernetesCluster
-		return ctrl.Result{RequeueAfter: r.opts.PollingInterval}, nil
+		return false, ctrl.Result{RequeueAfter: r.opts.PollingInterval}, nil
 	}
 	// KubernetesCluster exists, check if it is in running phase
 	if kubernetesCluster.Status.Phase != v1alpha1.KubernetesClusterPhaseRunning {
 		logger.Info("KubernetesCluster is not running. Waiting for it to be ready.", "phase", kubernetesCluster.Status.Phase)
-		return ctrl.Result{RequeueAfter: r.opts.PollingInterval}, nil
+		return false, ctrl.Result{RequeueAfter: r.opts.PollingInterval}, nil
 	}
 	logger.Info("KubernetesCluster is running", "name", kubernetesCluster.Name)
-	// Update the Pipeline status to indicate that the KubernetesCluster is running
-	if err := r.updateStatus(ctx, pipeline, v1alpha1.PipelinePhaseSucceeded, &metav1.Condition{
-		Type:    string(v1alpha1.PipelineConditionTypeReady),
-		Status:  metav1.ConditionTrue,
-		Reason:  "KubernetesClusterRunning",
-		Message: "KubernetesCluster is running and Pipeline has succeeded.",
-	}); err != nil {
-		logger.Error(err, "failed to update Pipeline status")
-		return ctrl.Result{}, fmt.Errorf("failed to update Pipeline status: %w", err)
+	return true, ctrl.Result{}, nil
+}
+
+func (r *PipelineReconciler) forKubernetesClusterConfiguration(ctx context.Context, req ctrl.Request, pipeline *v1alpha1.Pipeline) (bool, ctrl.Result, error) {
+	logger := log.FromContext(ctx)
+	// Check if the KubernetesClusterConfiguration is already created
+	name := pipeline.Spec.Cluster.Name
+	var kubernetesClusterConfiguration v1alpha1.KubernetesClusterConfiguration
+	if err := r.Get(ctx, client.ObjectKey{Name: name, Namespace: req.Namespace}, &kubernetesClusterConfiguration); err != nil {
+		if client.IgnoreNotFound(err) != nil {
+			logger.Error(err, "failed to get KubernetesClusterConfiguration")
+			return false, ctrl.Result{}, fmt.Errorf("failed to get KubernetesClusterConfiguration: %w", err)
+		}
+		// KubernetesClusterConfiguration does not exist, create it
+		kubernetesClusterConfiguration = v1alpha1.KubernetesClusterConfiguration{
+			ObjectMeta: metav1.ObjectMeta{
+				Name:      name,
+				Namespace: req.Namespace,
+			},
+			Spec: v1alpha1.KubernetesClusterConfigurationSpec{
+				Owner: v1alpha1.KubernetesClusterConfigurationSpecOwner{
+					Name: name,
+				},
+			},
+		}
+		if err := r.Create(ctx, &kubernetesClusterConfiguration); err != nil {
+			logger.Error(err, "failed to create KubernetesClusterConfiguration")
+			return false, ctrl.Result{}, fmt.Errorf("failed to create KubernetesClusterConfiguration: %w", err)
+		}
+		logger.Info("KubernetesClusterConfiguration created", "name", kubernetesClusterConfiguration.Name)
+		return false, ctrl.Result{RequeueAfter: r.opts.PollingInterval}, nil
 	}
-	logger.Info("Pipeline has succeeded")
-	return ctrl.Result{}, nil
+	// KubernetesClusterConfiguration exists, check if it is in running phase
+	if kubernetesClusterConfiguration.Status.Phase != v1alpha1.KubernetesClusterConfigurationPhaseRunning {
+		logger.Info("KubernetesClusterConfiguration is not running. Waiting for it to be ready.", "phase", kubernetesClusterConfiguration.Status.Phase)
+		return false, ctrl.Result{RequeueAfter: r.opts.PollingInterval}, nil
+	}
+	return true, ctrl.Result{}, nil
 }
 
 func (r *PipelineReconciler) SetupWithManager(mgr ctrl.Manager) error {

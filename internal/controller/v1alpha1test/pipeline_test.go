@@ -46,6 +46,8 @@ var _ = Describe("PipelineReconciler", func() {
 		Expect(err).NotTo(HaveOccurred())
 		err = k8sClient.DeleteAllOf(ctx, &v1alpha1.KubernetesCluster{}, client.InNamespace(testNamespace))
 		Expect(err).NotTo(HaveOccurred())
+		err = k8sClient.DeleteAllOf(ctx, &v1alpha1.KubernetesClusterConfiguration{}, client.InNamespace(testNamespace))
+		Expect(err).NotTo(HaveOccurred())
 	})
 
 	It("should set failed phase if a Pipeline resource is created without a cluster name", func(ctx context.Context) {
@@ -58,7 +60,7 @@ var _ = Describe("PipelineReconciler", func() {
 		By("creating a test Pipeline resource without a cluster name")
 		err := k8sClient.Create(ctx, &got)
 		Expect(err).NotTo(HaveOccurred())
-		updateStatus(ctx, &got, v1alpha1.PipelinePhaseRunning)
+		updateStatusPL(ctx, &got, v1alpha1.PipelinePhaseRunning)
 
 		By("reconciling the Pipeline resource")
 		res, err := pipelineReconciler.Reconcile(ctx, reconcile.Request{
@@ -92,7 +94,7 @@ var _ = Describe("PipelineReconciler", func() {
 		By("creating a test Pipeline resource")
 		err := k8sClient.Create(ctx, &got)
 		Expect(err).NotTo(HaveOccurred())
-		updateStatus(ctx, &got, v1alpha1.PipelinePhaseRunning)
+		updateStatusPL(ctx, &got, v1alpha1.PipelinePhaseRunning)
 
 		By("reconciling the Pipeline resource")
 		res, err := pipelineReconciler.Reconcile(ctx, reconcile.Request{
@@ -112,7 +114,7 @@ var _ = Describe("PipelineReconciler", func() {
 		Expect(cluster.ObjectMeta.Annotations[v1alpha1.KubernetesClusterAnnotationDescription]).To(Equal(description))
 	})
 
-	It("should succeed if a KubernetesCluster is in running phase", func(ctx context.Context) {
+	It("should create a KubernetesClusterConfiguration resource if not exists", func(ctx context.Context) {
 		got := v1alpha1.Pipeline{
 			ObjectMeta: metav1.ObjectMeta{
 				Name:      testName,
@@ -128,20 +130,75 @@ var _ = Describe("PipelineReconciler", func() {
 		By("creating a test Pipeline resource")
 		err := k8sClient.Create(ctx, &got)
 		Expect(err).NotTo(HaveOccurred())
-		updateStatus(ctx, &got, v1alpha1.PipelinePhaseRunning)
+		updateStatusPL(ctx, &got, v1alpha1.PipelinePhaseRunning)
 
 		By("creating a KubernetesCluster resource in running phase")
-		cluster := &v1alpha1.KubernetesCluster{
+		kc := &v1alpha1.KubernetesCluster{
 			ObjectMeta: metav1.ObjectMeta{
 				Name:      testClusterName,
 				Namespace: testNamespace,
 			},
 		}
-		err = k8sClient.Create(ctx, cluster)
+		err = k8sClient.Create(ctx, kc)
 		Expect(err).NotTo(HaveOccurred())
-		cluster.Status.Phase = v1alpha1.KubernetesClusterPhaseRunning
-		err = k8sClient.Status().Update(ctx, cluster)
+		updateStatusKC(ctx, kc, v1alpha1.KubernetesClusterPhaseRunning)
+
+		By("reconciling the Pipeline resource")
+		res, err := pipelineReconciler.Reconcile(ctx, reconcile.Request{
+			NamespacedName: namespacedName,
+		})
 		Expect(err).NotTo(HaveOccurred())
+		Expect(res.RequeueAfter).To(Equal(pollingInterval))
+
+		By("verifying the KubernetesClusterConfiguration resource is created")
+		var kcc v1alpha1.KubernetesClusterConfiguration
+		err = k8sClient.Get(ctx, types.NamespacedName{
+			Name:      testClusterName,
+			Namespace: testNamespace,
+		}, &kcc)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(kcc.Spec.Owner.Name).To(Equal(testClusterName))
+	})
+
+	It("should succeed if a KubernetesCluster and a KubernetesClusterConfiguration are both in running phase", func(ctx context.Context) {
+		got := v1alpha1.Pipeline{
+			ObjectMeta: metav1.ObjectMeta{
+				Name:      testName,
+				Namespace: testNamespace,
+			},
+			Spec: v1alpha1.PipelineSpec{
+				Cluster: v1alpha1.PipelineClusterSpec{
+					Name: testClusterName,
+				},
+			},
+		}
+
+		By("creating a test Pipeline resource")
+		err := k8sClient.Create(ctx, &got)
+		Expect(err).NotTo(HaveOccurred())
+		updateStatusPL(ctx, &got, v1alpha1.PipelinePhaseRunning)
+
+		By("creating a KubernetesCluster resource in running phase")
+		kc := &v1alpha1.KubernetesCluster{
+			ObjectMeta: metav1.ObjectMeta{
+				Name:      testClusterName,
+				Namespace: testNamespace,
+			},
+		}
+		err = k8sClient.Create(ctx, kc)
+		Expect(err).NotTo(HaveOccurred())
+		updateStatusKC(ctx, kc, v1alpha1.KubernetesClusterPhaseRunning)
+
+		By("creating a KubernetesClusterConfiguration resource in running phase")
+		kcc := &v1alpha1.KubernetesClusterConfiguration{
+			ObjectMeta: metav1.ObjectMeta{
+				Name:      testClusterName,
+				Namespace: testNamespace,
+			},
+		}
+		err = k8sClient.Create(ctx, kcc)
+		Expect(err).NotTo(HaveOccurred())
+		updateStatusKCC(ctx, kcc, v1alpha1.KubernetesClusterConfigurationPhaseRunning)
 
 		By("reconciling the Pipeline resource")
 		res, err := pipelineReconciler.Reconcile(ctx, reconcile.Request{

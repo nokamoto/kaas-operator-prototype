@@ -67,8 +67,20 @@ var _ = AfterSuite(func() {
 	Expect(err).NotTo(HaveOccurred())
 })
 
-func updateStatus(ctx context.Context, pipeline *v1alpha1.Pipeline, phase v1alpha1.PipelinePhase) {
-	pipeline.Status.Phase = phase
-	err := k8sClient.Status().Update(ctx, pipeline)
+func updateStatusPL(ctx context.Context, pl *v1alpha1.Pipeline, phase v1alpha1.PipelinePhase) {
+	pl.Status.Phase = phase
+	err := k8sClient.Status().Update(ctx, pl)
 	Expect(err).NotTo(HaveOccurred(), "failed to update Pipeline status")
+}
+
+func updateStatusKC(ctx context.Context, kc *v1alpha1.KubernetesCluster, phase v1alpha1.KubernetesClusterPhase) {
+	kc.Status.Phase = phase
+	err := k8sClient.Status().Update(ctx, kc)
+	Expect(err).NotTo(HaveOccurred(), "failed to update KubernetesCluster status")
+}
+
+func updateStatusKCC(ctx context.Context, kcc *v1alpha1.KubernetesClusterConfiguration, phase v1alpha1.KubernetesClusterConfigurationPhase) {
+	kcc.Status.Phase = phase
+	err := k8sClient.Status().Update(ctx, kcc)
+	Expect(err).NotTo(HaveOccurred(), "failed to update KubernetesClusterConfiguration status")
 }
