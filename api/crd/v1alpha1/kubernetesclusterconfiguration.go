@@ -61,6 +61,8 @@ func (obj *KubernetesClusterConfiguration) SetLastSyncedTime(t metav1.Time) {
 	obj.Status.LastSyncedTime = t
 }
 
+var KubernetesClusterConfigurationGVK = GroupVersion.WithKind("KubernetesClusterConfiguration")
+
 // +kubebuilder:object:root=true
 type KubernetesClusterConfigurationList struct {
 	metav1.TypeMeta `json:",inline"`
