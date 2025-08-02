@@ -44,6 +44,18 @@ type KubernetesClusterStatus struct {
 	LastSyncedTime metav1.Time            `json:"lastSyncedTime,omitempty"`
 }
 
+func (obj *KubernetesCluster) SetPhase(s string) {
+	obj.Status.Phase = KubernetesClusterPhase(s)
+}
+
+func (obj *KubernetesCluster) AddCondition(v metav1.Condition) {
+	obj.Status.Conditions = append(obj.Status.Conditions, v)
+}
+
+func (obj *KubernetesCluster) SetLastSyncedTime(t metav1.Time) {
+	obj.Status.LastSyncedTime = t
+}
+
 // +kubebuilder:object:root=true
 type KubernetesClusterList struct {
 	metav1.TypeMeta `json:",inline"`

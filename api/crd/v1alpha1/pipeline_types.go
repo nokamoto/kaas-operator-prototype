@@ -55,6 +55,18 @@ type PipelineStatus struct {
 	LastSyncedTime metav1.Time        `json:"lastSyncedTime,omitempty"`
 }
 
+func (obj *Pipeline) SetPhase(s string) {
+	obj.Status.Phase = PipelinePhase(s)
+}
+
+func (obj *Pipeline) AddCondition(v metav1.Condition) {
+	obj.Status.Conditions = append(obj.Status.Conditions, v)
+}
+
+func (obj *Pipeline) SetLastSyncedTime(t metav1.Time) {
+	obj.Status.LastSyncedTime = t
+}
+
 // +kubebuilder:object:root=true
 type PipelineList struct {
 	metav1.TypeMeta `json:",inline"`
