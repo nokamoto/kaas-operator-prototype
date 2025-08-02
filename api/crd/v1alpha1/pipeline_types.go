@@ -16,6 +16,7 @@ type Pipeline struct {
 }
 
 type PipelineClusterSpec struct {
+	Name        string `json:"name,omitempty"`
 	DisplayName string `json:"displayName,omitempty"`
 	Description string `json:"description,omitempty"`
 }

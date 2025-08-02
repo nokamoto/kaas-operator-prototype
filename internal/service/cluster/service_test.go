@@ -16,6 +16,7 @@ import (
 
 func TestClusterService_CreateCluster(t *testing.T) {
 	testPipelineName := "test-cluster"
+	testClusterName := "test-kubernetescluster"
 	type testcase struct {
 		name string
 		req  *apiv1alpha1.CreateClusterRequest
@@ -30,10 +31,16 @@ func TestClusterService_CreateCluster(t *testing.T) {
 			mock: func(client *Mockclient, namegen *Mocknamegen) {
 				gomock.InOrder(
 					namegen.EXPECT().New("cluster-create").Return(testPipelineName),
+					namegen.EXPECT().New("kubernetescluster").Return(testClusterName),
 					client.EXPECT().CreatePipeline(gomock.Any(), &typev1alpha1.Pipeline{
 						ObjectMeta: metav1.ObjectMeta{
 							Name:      testPipelineName,
 							Namespace: "default",
+						},
+						Spec: typev1alpha1.PipelineSpec{
+							Cluster: typev1alpha1.PipelineClusterSpec{
+								Name: testClusterName,
+							},
 						},
 					}).Return(nil),
 				)
@@ -48,6 +55,7 @@ func TestClusterService_CreateCluster(t *testing.T) {
 			mock: func(client *Mockclient, namegen *Mocknamegen) {
 				gomock.InOrder(
 					namegen.EXPECT().New(gomock.Any()).Return(testPipelineName),
+					namegen.EXPECT().New(gomock.Any()).Return(testClusterName),
 					client.EXPECT().CreatePipeline(gomock.Any(), gomock.Any()).Return(errors.New("failed to create pipeline")),
 				)
 			},

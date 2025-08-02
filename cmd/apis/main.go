@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/nokamoto/kaas-operator-prototype/internal/infra/kubernetes"
+	"github.com/nokamoto/kaas-operator-prototype/internal/infra/namegen"
 	"github.com/nokamoto/kaas-operator-prototype/internal/service/cluster"
-	"github.com/nokamoto/kaas-operator-prototype/internal/service/infra/kubernetes"
-	"github.com/nokamoto/kaas-operator-prototype/internal/service/infra/namegen"
 	"github.com/nokamoto/kaas-operator-prototype/internal/service/longrunningoperation"
 	"github.com/nokamoto/kaas-operator-prototype/pkg/api/proto/v1alpha1/v1alpha1connect"
 )
