@@ -53,7 +53,7 @@ func TestCreateTool_Handler(t *testing.T) {
 			want: &mcp.CallToolResultFor[any]{
 				Content: []mcp.Content{
 					&mcp.TextContent{
-						Text: "Cluster creation sucessfully started at operation `test-operation`.",
+						Text: "Cluster creation successfully started at operation `test-operation`.",
 					},
 				},
 			},
