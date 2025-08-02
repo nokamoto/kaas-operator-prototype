@@ -148,6 +148,7 @@ func (r *PipelineReconciler) forKubernetesClusterConfiguration(ctx context.Conte
 		logger.Info("KubernetesClusterConfiguration is not running. Waiting for it to be ready.", "phase", kubernetesClusterConfiguration.Status.Phase)
 		return false, ctrl.Result{RequeueAfter: r.opts.PollingInterval}, nil
 	}
+	logger.Info("KubernetesClusterConfiguration is ready", "name", kubernetesClusterConfiguration.Name, "phase", kubernetesClusterConfiguration.Status.Phase)
 	return true, ctrl.Result{}, nil
 }
 
