@@ -33,7 +33,7 @@ var _ = Describe("KubernetesClusterReconciler", func() {
 		err := k8sClient.Create(ctx, ns)
 		Expect(client.IgnoreAlreadyExists(err)).NotTo(HaveOccurred())
 
-		By("initializing the PipelineReconciler")
+		By("initializing the KubernetesClusterReconciler")
 		kubernetesClusterReconciler = kubernetescluster.NewKubernetesClusterReconciler(k8sClient, kubernetescluster.KubernetesClusterReconcilerOptions{
 			PollingInterval: pollingInterval,
 		})
