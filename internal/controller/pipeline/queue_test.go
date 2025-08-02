@@ -177,7 +177,7 @@ var _ = Describe("PipelineQueueReconciler", func() {
 		Expect(got.Status.Phase).To(Equal(v1alpha1.PipelinePhasePending))
 	})
 
-	It("should not set running phase if no running piplines exist but another pending pipeline is first in the queue", func(ctx context.Context) {
+	It("should not set running phase if no running pipelines exist but another pending pipeline is first in the queue", func(ctx context.Context) {
 		var got v1alpha1.Pipeline
 		By("creating another Pipeline resource in pending phase")
 		otherPipeline := &v1alpha1.Pipeline{
