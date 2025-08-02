@@ -28,6 +28,16 @@ type reconciler struct {
 	opts PipelineReconcilerOptions
 }
 
+func newReconciler(c client.Client, opts PipelineReconcilerOptions) reconciler {
+	if opts.PollingInterval == 0 {
+		opts.PollingInterval = 10 * time.Second
+	}
+	return reconciler{
+		Client: c,
+		opts:   opts,
+	}
+}
+
 func (r *reconciler) updateStatus(ctx context.Context, pipeline *v1alpha1.Pipeline, phase v1alpha1.PipelinePhase, cond *metav1.Condition) error {
 	logger := log.FromContext(ctx)
 	now := metav1.Now()

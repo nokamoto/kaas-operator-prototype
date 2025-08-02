@@ -19,10 +19,7 @@ type PipelineReconciler struct {
 
 func NewPipelineReconciler(client client.Client, opts PipelineReconcilerOptions) *PipelineReconciler {
 	return &PipelineReconciler{
-		reconciler: reconciler{
-			Client: client,
-			opts:   opts,
-		},
+		reconciler: newReconciler(client, opts),
 	}
 }
 

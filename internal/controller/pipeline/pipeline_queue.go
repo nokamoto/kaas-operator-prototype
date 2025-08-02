@@ -21,10 +21,7 @@ type PipelineQueueReconciler struct {
 
 func NewPipelineQueueReconciler(client client.Client, opts PipelineReconcilerOptions) *PipelineQueueReconciler {
 	return &PipelineQueueReconciler{
-		reconciler: reconciler{
-			Client: client,
-			opts:   opts,
-		},
+		reconciler: newReconciler(client, opts),
 	}
 }
 
