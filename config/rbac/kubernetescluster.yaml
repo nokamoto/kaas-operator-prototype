@@ -1,0 +1,25 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kubernetescluster-manager-role
+rules:
+  - apiGroups:
+      - nokamoto.github.com
+    resources:
+      - kubernetesclusters
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - nokamoto.github.com
+    resources:
+      - kubernetesclusters/status
+    verbs:
+      - get
+      - patch
+      - update

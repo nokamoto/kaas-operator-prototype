@@ -13,14 +13,11 @@ type Kind mg.Namespace
 
 // Build builds the application for Kind.
 func (Kind) Build() error {
-	apps := []string{
-		"./cmd/pipelinecontroller",
-	}
 	env := map[string]string{
 		"KO_DOCKER_REPO": "kind.local",
 	}
-	for _, app := range apps {
-		if err := sh.RunWithV(env, "ko", "build", "--base-import-paths", app); err != nil {
+	for _, c := range controllers {
+		if err := sh.RunWithV(env, "ko", "build", "--base-import-paths", fmt.Sprintf("./cmd/%scontroller", c)); err != nil {
 			return err
 		}
 	}
