@@ -62,5 +62,10 @@ var _ = Describe("KubernetesClusterReconciler", func() {
 		})
 		Expect(err).NotTo(HaveOccurred())
 		Expect(res.RequeueAfter).To(Equal(pollingInterval))
+
+		By("verifying the KubernetesCluster is in creating phase")
+		err = k8sClient.Get(ctx, namespacedName, got)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(got.Status.Phase).To(Equal(v1alpha1.KubernetesClusterPhaseCreating))
 	})
 })

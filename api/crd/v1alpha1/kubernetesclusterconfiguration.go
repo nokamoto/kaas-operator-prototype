@@ -25,7 +25,20 @@ type KubernetesClusterConfigurationSpecOwner struct {
 	Name string `json:"name,omitempty"`
 }
 
-type KubernetesClusterConfigurationStatus struct{}
+type KubernetesClusterConfigurationPhase string
+
+const (
+	// KubernetesClusterConfigurationPhaseCreating indicates that the configuration is being created.
+	KubernetesClusterConfigurationPhaseCreating KubernetesClusterConfigurationPhase = "Creating"
+	// KubernetesClusterConfigurationPhaseRunning indicates that the configuration is running.
+	KubernetesClusterConfigurationPhaseRunning KubernetesClusterConfigurationPhase = "Running"
+)
+
+type KubernetesClusterConfigurationStatus struct {
+	Phase          KubernetesClusterConfigurationPhase `json:"phase,omitempty"`
+	Conditions     []metav1.Condition                  `json:"conditions,omitempty"`
+	LastSyncedTime metav1.Time                         `json:"lastSyncedTime,omitempty"`
+}
 
 // +kubebuilder:object:root=true
 type KubernetesClusterConfigurationList struct {
