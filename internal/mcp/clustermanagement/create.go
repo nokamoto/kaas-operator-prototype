@@ -56,7 +56,7 @@ func (c *CreateTool) Handler(
 	return &mcp.CallToolResultFor[any]{
 		Content: []mcp.Content{
 			&mcp.TextContent{
-				Text: fmt.Sprintf("Cluster creation sucessfully started at operation `%s`.", res.Msg.GetName()),
+				Text: fmt.Sprintf("Cluster creation successfully started at operation `%s`.", res.Msg.GetName()),
 			},
 		},
 	}, nil
