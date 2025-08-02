@@ -31,7 +31,7 @@ func newDefaultRestConfig() (*rest.Config, error) {
 }
 
 // New creates a new TypedClient with a default REST configuration.
-// It use in-cluster configuration if available, otherwise it falls back to the kubeconfig file.
+// It uses in-cluster configuration if available, otherwise it falls back to the kubeconfig file.
 func New() (*TypedClient, error) {
 	cfg, err := newDefaultRestConfig()
 	if err != nil {
