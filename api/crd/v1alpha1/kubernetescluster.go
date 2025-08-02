@@ -38,7 +38,7 @@ type KubernetesClusterStatus struct {
 type KubernetesClusterList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []Pipeline `json:"items"`
+	Items           []KubernetesCluster `json:"items"`
 }
 
 func init() {

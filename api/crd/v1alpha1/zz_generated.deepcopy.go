@@ -43,7 +43,7 @@ func (in *KubernetesClusterList) DeepCopyInto(out *KubernetesClusterList) {
 	in.ListMeta.DeepCopyInto(&out.ListMeta)
 	if in.Items != nil {
 		in, out := &in.Items, &out.Items
-		*out = make([]Pipeline, len(*in))
+		*out = make([]KubernetesCluster, len(*in))
 		for i := range *in {
 			(*in)[i].DeepCopyInto(&(*out)[i])
 		}
