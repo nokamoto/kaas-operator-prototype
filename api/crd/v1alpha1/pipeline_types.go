@@ -29,3 +29,5 @@ type PipelineList struct {
 func init() {
 	SchemeBuilder.Register(&Pipeline{}, &PipelineList{})
 }
+
+var PipelineGVR = GroupVersion.WithResource("pipelines")

@@ -7,9 +7,12 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/scheme"
 )
 
-var SchemeBuilder = &scheme.Builder{
-	GroupVersion: schema.GroupVersion{
+var (
+	GroupVersion = schema.GroupVersion{
 		Group:   "nokamoto.github.com",
 		Version: "v1alpha1",
-	},
-}
+	}
+	SchemeBuilder = &scheme.Builder{
+		GroupVersion: GroupVersion,
+	}
+)
