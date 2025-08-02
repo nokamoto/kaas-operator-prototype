@@ -28,6 +28,15 @@ const (
 	KubernetesClusterPhaseDeleting KubernetesClusterPhase = "Deleting"
 )
 
+type KubernetesClusterConditionType string
+
+const (
+	// KubernetesClusterConditionReady indicates that the Kubernetes cluster is ready to be used.
+	KubernetesClusterConditionReady KubernetesClusterConditionType = "Ready"
+	// KubernetesClusterConditionFailed indicates that the Kubernetes cluster has failed.
+	KubernetesClusterConditionFailed KubernetesClusterConditionType = "Failed"
+)
+
 type KubernetesClusterStatus struct {
 	Phase          KubernetesClusterPhase `json:"phase,omitempty"`
 	Conditions     []metav1.Condition     `json:"conditions,omitempty"`

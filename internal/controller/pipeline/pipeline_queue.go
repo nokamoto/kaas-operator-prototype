@@ -19,12 +19,9 @@ type PipelineQueueReconciler struct {
 	reconciler
 }
 
-func NewPipelineQueueReconciler(client client.Client) *PipelineQueueReconciler {
+func NewPipelineQueueReconciler(client client.Client, opts PipelineReconcilerOptions) *PipelineQueueReconciler {
 	return &PipelineQueueReconciler{
-		reconciler: reconciler{
-			Client: client,
-			now:    metav1.Now,
-		},
+		reconciler: newReconciler(client, opts),
 	}
 }
 
@@ -49,7 +46,7 @@ func (r *PipelineQueueReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 			return ctrl.Result{}, fmt.Errorf("failed to reconcile Pipeline: %w", err)
 		}
 		// requeue immediately to check the status again
-		return ctrl.Result{RequeueAfter: pollingInterval}, nil
+		return ctrl.Result{RequeueAfter: r.opts.PollingInterval}, nil
 	default:
 		logger.Info("Pipeline is in an unknown phase. Set to Pending to start processing.")
 		if err := r.updateStatus(ctx, pipeline, v1alpha1.PipelinePhasePending, &metav1.Condition{
