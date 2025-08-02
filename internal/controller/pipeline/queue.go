@@ -57,18 +57,13 @@ func (r *PipelineQueueReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 		return ctrl.Result{RequeueAfter: pollingInterval}, nil
 	default:
 		logger.Info("Pipeline is in an unknown phase. Set to Pending to start processing.")
-		now := r.now()
-		pipeline.Status.Phase = v1alpha1.PipelinePhasePending
-		pipeline.Status.LastSyncedTime = now
-		pipeline.Status.Conditions = append(pipeline.Status.Conditions, metav1.Condition{
-			Type:               string(v1alpha1.PipelineConditionTypeReady),
-			Status:             metav1.ConditionTrue,
-			LastTransitionTime: now,
-			Reason:             "PipelinePhasePending",
-			Message:            "Pipeline is marked as pending and waiting to be processed.",
-		})
-		if err := r.Status().Update(ctx, pipeline); err != nil {
-			logger.Error(err, "failed to update Pipeline status")
+		if err := r.updateStatus(ctx, pipeline, v1alpha1.PipelinePhasePending, &metav1.Condition{
+			Type:    string(v1alpha1.PipelineConditionTypeReady),
+			Status:  metav1.ConditionTrue,
+			Reason:  "PipelinePhasePending",
+			Message: "Pipeline is now pending and waiting to be processed.",
+		}); err != nil {
+			logger.Error(err, "failed to update Pipeline status to Pending")
 			return ctrl.Result{}, fmt.Errorf("failed to update Pipeline status: %w", err)
 		}
 	}
@@ -85,6 +80,7 @@ func (r *PipelineQueueReconciler) reconcile(ctx context.Context, pipeline *v1alp
 	// check if the pipeline is first in the queue
 	var waitList []*v1alpha1.Pipeline
 	for _, p := range pipelineList.Items {
+		logger.Info("Checking Pipeline in queue", "name", p.Name, "phase", p.Status.Phase, "creationTimestamp", p.CreationTimestamp)
 		if p.Name == pipeline.Name {
 			continue
 		}
@@ -96,26 +92,42 @@ func (r *PipelineQueueReconciler) reconcile(ctx context.Context, pipeline *v1alp
 				// if the pending pipeline was created before the current one, it should be processed first
 				waitList = append(waitList, &p)
 			}
+			if p.CreationTimestamp.Equal(&pipeline.CreationTimestamp) {
+				// if the pending pipeline was created at the same time, compare by name
+				if p.Name < pipeline.Name {
+					waitList = append(waitList, &p)
+				}
+			}
 		}
 	}
 	if len(waitList) > 0 {
 		logger.Info("There are pipelines waiting in the queue", "count", len(waitList))
+		return nil
 	}
 	// if the current pipeline is the first in the queue, start processing it
+	if err := r.updateStatus(ctx, pipeline, v1alpha1.PipelinePhaseRunning, &metav1.Condition{
+		Type:    string(v1alpha1.PipelineConditionTypeReady),
+		Status:  metav1.ConditionTrue,
+		Reason:  "PipelinePhaseRunning",
+		Message: "Pipeline is now running.",
+	}); err != nil {
+		return fmt.Errorf("failed to update Pipeline status to running: %w", err)
+	}
+	logger.Info("Pipeline is now running")
+	return nil
+}
+
+func (r *PipelineQueueReconciler) updateStatus(ctx context.Context, pipeline *v1alpha1.Pipeline, phase v1alpha1.PipelinePhase, cond *metav1.Condition) error {
 	now := r.now()
-	pipeline.Status.Phase = v1alpha1.PipelinePhaseRunning
+	pipeline.Status.Phase = phase
 	pipeline.Status.LastSyncedTime = now
-	pipeline.Status.Conditions = append(pipeline.Status.Conditions, metav1.Condition{
-		Type:               string(v1alpha1.PipelineConditionTypeReady),
-		Status:             metav1.ConditionTrue,
-		LastTransitionTime: now,
-		Reason:             "PipelinePhaseRunning",
-		Message:            "Pipeline is marked as running and will be processed.",
-	})
+	if cond != nil {
+		cond.LastTransitionTime = now
+		pipeline.Status.Conditions = append(pipeline.Status.Conditions, *cond)
+	}
 	if err := r.Status().Update(ctx, pipeline); err != nil {
 		return fmt.Errorf("failed to update Pipeline status: %w", err)
 	}
-	logger.Info("Pipeline is now running")
 	return nil
 }
 
