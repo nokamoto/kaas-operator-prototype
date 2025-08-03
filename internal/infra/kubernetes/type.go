@@ -21,14 +21,13 @@ func (c *objectClient[A]) create(ctx context.Context, obj A) error {
 	return nil
 }
 
-func (c *objectClient[A]) get(ctx context.Context, name, namespace string) (A, error) {
-	var obj A
+func (c *objectClient[A]) get(ctx context.Context, name, namespace string, obj A) error {
 	err := c.client.Get(ctx, client.ObjectKey{Name: name, Namespace: namespace}, obj)
 	if client.IgnoreNotFound(err) != nil {
-		return obj, fmt.Errorf("failed to get %s %s in namespace %s: %w", c.typ, name, namespace, err)
+		return fmt.Errorf("failed to get %s `%s` in namespace `%s`: %w", c.typ, name, namespace, err)
 	}
 	if err != nil {
-		return obj, errors.Join(domain.ErrResourceNotFound, fmt.Errorf("%s %s not found in namespace %s", c.typ, name, namespace))
+		return errors.Join(domain.ErrResourceNotFound, fmt.Errorf("%s %s not found in namespace %s", c.typ, name, namespace))
 	}
-	return obj, nil
+	return nil
 }

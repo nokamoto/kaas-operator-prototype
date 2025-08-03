@@ -10,6 +10,10 @@ import (
 	"github.com/nokamoto/kaas-operator-prototype/internal/mcp/clustermanagement"
 )
 
+func register[T any](server *mcp.Server, t clustermanagement.Tool[T]) {
+	mcp.AddTool(server, t.New(), t.Handler)
+}
+
 func main() {
 	server := mcp.NewServer(&mcp.Implementation{
 		Name:    "kaas-operator-prototype",
@@ -24,9 +28,9 @@ func main() {
 		return baseURL
 	})
 
-	// Register the Cluster Management tool
-	createTool := clustermanagement.New(r)
-	mcp.AddTool(server, createTool.Tool(), createTool.Handler)
+	// Register the Cluster Management tools
+	register(server, clustermanagement.NewCreateClusterTool(r))
+	register(server, clustermanagement.NewDescribeLongRunningOperationTool(r))
 
 	if err := server.Run(context.Background(), mcp.NewStdioTransport()); err != nil {
 		slog.Error("failed to run server", "error", err)

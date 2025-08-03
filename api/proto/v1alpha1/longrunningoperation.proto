@@ -21,27 +21,48 @@ message LongRunningOperation {
   // Required. The unique identifier for the operation.
   // This field is read-only and is set by the system.
   string name = 1;
+  // Indicates whether the operation has completed.
+  // If true, the operation is done and the response field contains the result.
+  // This field is read-only and is set by the system.
   bool done = 2;
+  // Metadata contains any additional information about the operation.
+  // Typically, this is set to a Pipeline object that describes the progress of the operation.
+  // This field is read-only and is set by the system.
   google.protobuf.Any metadata = 3;
+  // Response contains the result of the operation if it is done.
+  // This field is read-only and is set by the system.
+  // The type of the response is typically a Cluster object that contains the details of the created cluster.
+  // If the operation is failed, this field is Empty and metadata contains the error details.
   google.protobuf.Any response = 4;
-
+  // Pipeline represents the current state of the operation for cluster creation.
   message Pipeline {
     message Spec {
+      // The name of the cluster being created.
       string name = 1;
+      // The display name of the cluster.
       string displayName = 2;
+      // A description of the cluster.
       string description = 3;
     }
     message Status {
       message Condition {
+        // The message provides a human-readable description of the condition.
         string message = 1;
+        // The last transition time indicates when the condition last changed.
         google.protobuf.Timestamp last_transition_time = 2;
       }
+      // The phase indicates the current phase of the operation.
       string phase = 1;
+      // Conditions provide additional information about the operation's status.
       repeated Condition conditions = 2;
+      // The last synched time indicates when the operation was last updated.
       google.protobuf.Timestamp last_synched_time = 3;
     }
+    // The namespace in which the operation is being performed.
     string namespace = 1;
+    // The spec contains the details of the operation.
     Spec spec = 2;
+    // The status contains the current status of the operation.
     Status status = 3;
   }
 }

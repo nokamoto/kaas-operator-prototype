@@ -75,15 +75,18 @@ func (c *TypedClient) CreatePipeline(ctx context.Context, pipeline *v1alpha1.Pip
 
 // GetPipeline retrieves a Pipeline resource by its name and namespace.
 func (c *TypedClient) GetPipeline(ctx context.Context, name, namespace string) (*v1alpha1.Pipeline, error) {
-	return c.pl.get(ctx, name, namespace)
+	var pl v1alpha1.Pipeline
+	return &pl, c.pl.get(ctx, name, namespace, &pl)
 }
 
 // GetKubernetesCluster retrieves a KubernetesCluster resource by its name and namespace.
 func (c *TypedClient) GetKubernetesCluster(ctx context.Context, name, namespace string) (*v1alpha1.KubernetesCluster, error) {
-	return c.kc.get(ctx, name, namespace)
+	var kc v1alpha1.KubernetesCluster
+	return &kc, c.kc.get(ctx, name, namespace, &kc)
 }
 
 // GetKubernetesClusterConfiguration retrieves a KubernetesClusterConfiguration resource by its name and namespace.
 func (c *TypedClient) GetKubernetesClusterConfiguration(ctx context.Context, name, namespace string) (*v1alpha1.KubernetesClusterConfiguration, error) {
-	return c.kcc.get(ctx, name, namespace)
+	var kcc v1alpha1.KubernetesClusterConfiguration
+	return &kcc, c.kcc.get(ctx, name, namespace, &kcc)
 }

@@ -63,19 +63,31 @@ func (Build) Buf() error {
 
 // Mock generates the mock for gRPC client interfaces.
 func (Build) Mock() error {
-	s, err := sh.Output("mockgen", "./pkg/api/proto/v1alpha1/v1alpha1connect", "ClusterServiceClient")
-	if err != nil {
-		return fmt.Errorf("failed to generate mock: %w", err)
+	type mock struct {
+		interfaceName string
+		file          string
 	}
-	if err := os.WriteFile("internal/mock/mock_v1alpha1connect/cluster.go", []byte(s), 0o644); err != nil {
-		return fmt.Errorf("failed to write mock file: %w", err)
+	mocks := []mock{
+		{
+			interfaceName: "ClusterServiceClient",
+			file:          "cluster.go",
+		},
+		{
+			interfaceName: "LongRunningOperationServiceClient",
+			file:          "longrunningoperation.go",
+		},
+	}
+	for _, m := range mocks {
+		s, err := sh.Output("mockgen", "./pkg/api/proto/v1alpha1/v1alpha1connect", m.interfaceName)
+		if err != nil {
+			return fmt.Errorf("failed to generate mock: %w", err)
+		}
+		file := fmt.Sprintf("internal/mock/mock_v1alpha1connect/%s", m.file)
+		if err := os.WriteFile(file, []byte(s), 0o644); err != nil {
+			return fmt.Errorf("failed to write mock file: %w", err)
+		}
 	}
 	return nil
-}
-
-// InstallMCPServer installs the MCP server binary.
-func (Build) InstallMCPServer() error {
-	return sh.RunV("go", "install", "./cmd/mcpserver")
 }
 
 // Generate runs all the generate commands for the project.
