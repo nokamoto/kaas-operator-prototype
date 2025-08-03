@@ -84,3 +84,9 @@ func updateStatusKCC(ctx context.Context, kcc *v1alpha1.KubernetesClusterConfigu
 	err := k8sClient.Status().Update(ctx, kcc)
 	Expect(err).NotTo(HaveOccurred(), "failed to update KubernetesClusterConfiguration status")
 }
+
+func updateStatusKCCM(ctx context.Context, kccm *v1alpha1.KubernetesClusterConfigurationConfigMap, phase v1alpha1.KubernetesClusterConfigurationPhase) {
+	kccm.Status.Phase = phase
+	err := k8sClient.Status().Update(ctx, kccm)
+	Expect(err).NotTo(HaveOccurred(), "failed to update KubernetesClusterConfigurationConfigMap status")
+}
