@@ -10,26 +10,43 @@ Testing ground for KaaS controller architecture
 
 This project uses [Mage](https://magefile.org/) to automate development tasks.
 
-### Install dependencies
-
-To install Go dependencies for development, run:
+See the full list of available tasks with:
 
 ```sh
-mage install
+mage -l
 ```
 
-### Build
+### Common Use Cases
 
-To generate Custom Resource Definitions (CRDs) using controller-gen, run:
+#### All-in-one build
+
+Run all necessary build steps for the project.
 
 ```sh
-mage build:controllerGenCRD
+mage
 ```
 
-### Formatting
+#### Local development with Kind
 
-To format Go code and tidy dependencies, run:
+Build and deploy to a local Kind cluster:
 
 ```sh
-mage format:go
+mage kind:build
+mage kind:apply
+```
+
+Remove deployed applications from Kind:
+
+```sh
+mage kind:clean
+```
+
+#### Setup for Serena MCP
+
+Prepare the environment for Serena MCP development:
+
+```sh
+direnv allow
+mage python:venv
+mage python:install
 ```
