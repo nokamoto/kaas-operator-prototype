@@ -13,7 +13,9 @@ import (
 
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	anypb "google.golang.org/protobuf/types/known/anypb"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
+	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 )
 
 const (
@@ -29,7 +31,10 @@ type LongRunningOperation struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Required. The unique identifier for the operation.
 	// This field is read-only and is set by the system.
-	Name          string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Name          string     `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Done          bool       `protobuf:"varint,2,opt,name=done,proto3" json:"done,omitempty"`
+	Metadata      *anypb.Any `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Response      *anypb.Any `protobuf:"bytes,4,opt,name=response,proto3" json:"response,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -69,6 +74,27 @@ func (x *LongRunningOperation) GetName() string {
 		return x.Name
 	}
 	return ""
+}
+
+func (x *LongRunningOperation) GetDone() bool {
+	if x != nil {
+		return x.Done
+	}
+	return false
+}
+
+func (x *LongRunningOperation) GetMetadata() *anypb.Any {
+	if x != nil {
+		return x.Metadata
+	}
+	return nil
+}
+
+func (x *LongRunningOperation) GetResponse() *anypb.Any {
+	if x != nil {
+		return x.Response
+	}
+	return nil
 }
 
 type GetOperationRequest struct {
@@ -161,13 +187,265 @@ func (x *ListOperationsResponse) GetOperations() []*LongRunningOperation {
 	return nil
 }
 
+type LongRunningOperation_Pipeline struct {
+	state         protoimpl.MessageState                `protogen:"open.v1"`
+	Namespace     string                                `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
+	Spec          *LongRunningOperation_Pipeline_Spec   `protobuf:"bytes,2,opt,name=spec,proto3" json:"spec,omitempty"`
+	Status        *LongRunningOperation_Pipeline_Status `protobuf:"bytes,3,opt,name=status,proto3" json:"status,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *LongRunningOperation_Pipeline) Reset() {
+	*x = LongRunningOperation_Pipeline{}
+	mi := &file_api_proto_v1alpha1_longrunningoperation_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *LongRunningOperation_Pipeline) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LongRunningOperation_Pipeline) ProtoMessage() {}
+
+func (x *LongRunningOperation_Pipeline) ProtoReflect() protoreflect.Message {
+	mi := &file_api_proto_v1alpha1_longrunningoperation_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LongRunningOperation_Pipeline.ProtoReflect.Descriptor instead.
+func (*LongRunningOperation_Pipeline) Descriptor() ([]byte, []int) {
+	return file_api_proto_v1alpha1_longrunningoperation_proto_rawDescGZIP(), []int{0, 0}
+}
+
+func (x *LongRunningOperation_Pipeline) GetNamespace() string {
+	if x != nil {
+		return x.Namespace
+	}
+	return ""
+}
+
+func (x *LongRunningOperation_Pipeline) GetSpec() *LongRunningOperation_Pipeline_Spec {
+	if x != nil {
+		return x.Spec
+	}
+	return nil
+}
+
+func (x *LongRunningOperation_Pipeline) GetStatus() *LongRunningOperation_Pipeline_Status {
+	if x != nil {
+		return x.Status
+	}
+	return nil
+}
+
+type LongRunningOperation_Pipeline_Spec struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	DisplayName   string                 `protobuf:"bytes,2,opt,name=displayName,proto3" json:"displayName,omitempty"`
+	Description   string                 `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *LongRunningOperation_Pipeline_Spec) Reset() {
+	*x = LongRunningOperation_Pipeline_Spec{}
+	mi := &file_api_proto_v1alpha1_longrunningoperation_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *LongRunningOperation_Pipeline_Spec) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LongRunningOperation_Pipeline_Spec) ProtoMessage() {}
+
+func (x *LongRunningOperation_Pipeline_Spec) ProtoReflect() protoreflect.Message {
+	mi := &file_api_proto_v1alpha1_longrunningoperation_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LongRunningOperation_Pipeline_Spec.ProtoReflect.Descriptor instead.
+func (*LongRunningOperation_Pipeline_Spec) Descriptor() ([]byte, []int) {
+	return file_api_proto_v1alpha1_longrunningoperation_proto_rawDescGZIP(), []int{0, 0, 0}
+}
+
+func (x *LongRunningOperation_Pipeline_Spec) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *LongRunningOperation_Pipeline_Spec) GetDisplayName() string {
+	if x != nil {
+		return x.DisplayName
+	}
+	return ""
+}
+
+func (x *LongRunningOperation_Pipeline_Spec) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
+}
+
+type LongRunningOperation_Pipeline_Status struct {
+	state           protoimpl.MessageState                            `protogen:"open.v1"`
+	Phase           string                                            `protobuf:"bytes,1,opt,name=phase,proto3" json:"phase,omitempty"`
+	Conditions      []*LongRunningOperation_Pipeline_Status_Condition `protobuf:"bytes,2,rep,name=conditions,proto3" json:"conditions,omitempty"`
+	LastSynchedTime *timestamppb.Timestamp                            `protobuf:"bytes,3,opt,name=last_synched_time,json=lastSynchedTime,proto3" json:"last_synched_time,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *LongRunningOperation_Pipeline_Status) Reset() {
+	*x = LongRunningOperation_Pipeline_Status{}
+	mi := &file_api_proto_v1alpha1_longrunningoperation_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *LongRunningOperation_Pipeline_Status) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LongRunningOperation_Pipeline_Status) ProtoMessage() {}
+
+func (x *LongRunningOperation_Pipeline_Status) ProtoReflect() protoreflect.Message {
+	mi := &file_api_proto_v1alpha1_longrunningoperation_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LongRunningOperation_Pipeline_Status.ProtoReflect.Descriptor instead.
+func (*LongRunningOperation_Pipeline_Status) Descriptor() ([]byte, []int) {
+	return file_api_proto_v1alpha1_longrunningoperation_proto_rawDescGZIP(), []int{0, 0, 1}
+}
+
+func (x *LongRunningOperation_Pipeline_Status) GetPhase() string {
+	if x != nil {
+		return x.Phase
+	}
+	return ""
+}
+
+func (x *LongRunningOperation_Pipeline_Status) GetConditions() []*LongRunningOperation_Pipeline_Status_Condition {
+	if x != nil {
+		return x.Conditions
+	}
+	return nil
+}
+
+func (x *LongRunningOperation_Pipeline_Status) GetLastSynchedTime() *timestamppb.Timestamp {
+	if x != nil {
+		return x.LastSynchedTime
+	}
+	return nil
+}
+
+type LongRunningOperation_Pipeline_Status_Condition struct {
+	state              protoimpl.MessageState `protogen:"open.v1"`
+	Message            string                 `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
+	LastTransitionTime *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=last_transition_time,json=lastTransitionTime,proto3" json:"last_transition_time,omitempty"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
+}
+
+func (x *LongRunningOperation_Pipeline_Status_Condition) Reset() {
+	*x = LongRunningOperation_Pipeline_Status_Condition{}
+	mi := &file_api_proto_v1alpha1_longrunningoperation_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *LongRunningOperation_Pipeline_Status_Condition) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LongRunningOperation_Pipeline_Status_Condition) ProtoMessage() {}
+
+func (x *LongRunningOperation_Pipeline_Status_Condition) ProtoReflect() protoreflect.Message {
+	mi := &file_api_proto_v1alpha1_longrunningoperation_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LongRunningOperation_Pipeline_Status_Condition.ProtoReflect.Descriptor instead.
+func (*LongRunningOperation_Pipeline_Status_Condition) Descriptor() ([]byte, []int) {
+	return file_api_proto_v1alpha1_longrunningoperation_proto_rawDescGZIP(), []int{0, 0, 1, 0}
+}
+
+func (x *LongRunningOperation_Pipeline_Status_Condition) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+func (x *LongRunningOperation_Pipeline_Status_Condition) GetLastTransitionTime() *timestamppb.Timestamp {
+	if x != nil {
+		return x.LastTransitionTime
+	}
+	return nil
+}
+
 var File_api_proto_v1alpha1_longrunningoperation_proto protoreflect.FileDescriptor
 
 const file_api_proto_v1alpha1_longrunningoperation_proto_rawDesc = "" +
 	"\n" +
-	"-api/proto/v1alpha1/longrunningoperation.proto\x12\x12api.proto.v1alpha1\x1a\x1bgoogle/protobuf/empty.proto\"*\n" +
+	"-api/proto/v1alpha1/longrunningoperation.proto\x12\x12api.proto.v1alpha1\x1a\x19google/protobuf/any.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\x8d\x06\n" +
 	"\x14LongRunningOperation\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\")\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12\x12\n" +
+	"\x04done\x18\x02 \x01(\bR\x04done\x120\n" +
+	"\bmetadata\x18\x03 \x01(\v2\x14.google.protobuf.AnyR\bmetadata\x120\n" +
+	"\bresponse\x18\x04 \x01(\v2\x14.google.protobuf.AnyR\bresponse\x1a\xe8\x04\n" +
+	"\bPipeline\x12\x1c\n" +
+	"\tnamespace\x18\x01 \x01(\tR\tnamespace\x12J\n" +
+	"\x04spec\x18\x02 \x01(\v26.api.proto.v1alpha1.LongRunningOperation.Pipeline.SpecR\x04spec\x12P\n" +
+	"\x06status\x18\x03 \x01(\v28.api.proto.v1alpha1.LongRunningOperation.Pipeline.StatusR\x06status\x1a^\n" +
+	"\x04Spec\x12\x12\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12 \n" +
+	"\vdisplayName\x18\x02 \x01(\tR\vdisplayName\x12 \n" +
+	"\vdescription\x18\x03 \x01(\tR\vdescription\x1a\xbf\x02\n" +
+	"\x06Status\x12\x14\n" +
+	"\x05phase\x18\x01 \x01(\tR\x05phase\x12b\n" +
+	"\n" +
+	"conditions\x18\x02 \x03(\v2B.api.proto.v1alpha1.LongRunningOperation.Pipeline.Status.ConditionR\n" +
+	"conditions\x12F\n" +
+	"\x11last_synched_time\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\x0flastSynchedTime\x1as\n" +
+	"\tCondition\x12\x18\n" +
+	"\amessage\x18\x01 \x01(\tR\amessage\x12L\n" +
+	"\x14last_transition_time\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\x12lastTransitionTime\")\n" +
 	"\x13GetOperationRequest\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\"b\n" +
 	"\x16ListOperationsResponse\x12H\n" +
@@ -190,24 +468,37 @@ func file_api_proto_v1alpha1_longrunningoperation_proto_rawDescGZIP() []byte {
 	return file_api_proto_v1alpha1_longrunningoperation_proto_rawDescData
 }
 
-var file_api_proto_v1alpha1_longrunningoperation_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_api_proto_v1alpha1_longrunningoperation_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_api_proto_v1alpha1_longrunningoperation_proto_goTypes = []any{
-	(*LongRunningOperation)(nil),   // 0: api.proto.v1alpha1.LongRunningOperation
-	(*GetOperationRequest)(nil),    // 1: api.proto.v1alpha1.GetOperationRequest
-	(*ListOperationsResponse)(nil), // 2: api.proto.v1alpha1.ListOperationsResponse
-	(*emptypb.Empty)(nil),          // 3: google.protobuf.Empty
+	(*LongRunningOperation)(nil),                           // 0: api.proto.v1alpha1.LongRunningOperation
+	(*GetOperationRequest)(nil),                            // 1: api.proto.v1alpha1.GetOperationRequest
+	(*ListOperationsResponse)(nil),                         // 2: api.proto.v1alpha1.ListOperationsResponse
+	(*LongRunningOperation_Pipeline)(nil),                  // 3: api.proto.v1alpha1.LongRunningOperation.Pipeline
+	(*LongRunningOperation_Pipeline_Spec)(nil),             // 4: api.proto.v1alpha1.LongRunningOperation.Pipeline.Spec
+	(*LongRunningOperation_Pipeline_Status)(nil),           // 5: api.proto.v1alpha1.LongRunningOperation.Pipeline.Status
+	(*LongRunningOperation_Pipeline_Status_Condition)(nil), // 6: api.proto.v1alpha1.LongRunningOperation.Pipeline.Status.Condition
+	(*anypb.Any)(nil),                                      // 7: google.protobuf.Any
+	(*timestamppb.Timestamp)(nil),                          // 8: google.protobuf.Timestamp
+	(*emptypb.Empty)(nil),                                  // 9: google.protobuf.Empty
 }
 var file_api_proto_v1alpha1_longrunningoperation_proto_depIdxs = []int32{
-	0, // 0: api.proto.v1alpha1.ListOperationsResponse.operations:type_name -> api.proto.v1alpha1.LongRunningOperation
-	1, // 1: api.proto.v1alpha1.LongRunningOperationService.GetOperation:input_type -> api.proto.v1alpha1.GetOperationRequest
-	3, // 2: api.proto.v1alpha1.LongRunningOperationService.ListOperations:input_type -> google.protobuf.Empty
-	0, // 3: api.proto.v1alpha1.LongRunningOperationService.GetOperation:output_type -> api.proto.v1alpha1.LongRunningOperation
-	2, // 4: api.proto.v1alpha1.LongRunningOperationService.ListOperations:output_type -> api.proto.v1alpha1.ListOperationsResponse
-	3, // [3:5] is the sub-list for method output_type
-	1, // [1:3] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	7,  // 0: api.proto.v1alpha1.LongRunningOperation.metadata:type_name -> google.protobuf.Any
+	7,  // 1: api.proto.v1alpha1.LongRunningOperation.response:type_name -> google.protobuf.Any
+	0,  // 2: api.proto.v1alpha1.ListOperationsResponse.operations:type_name -> api.proto.v1alpha1.LongRunningOperation
+	4,  // 3: api.proto.v1alpha1.LongRunningOperation.Pipeline.spec:type_name -> api.proto.v1alpha1.LongRunningOperation.Pipeline.Spec
+	5,  // 4: api.proto.v1alpha1.LongRunningOperation.Pipeline.status:type_name -> api.proto.v1alpha1.LongRunningOperation.Pipeline.Status
+	6,  // 5: api.proto.v1alpha1.LongRunningOperation.Pipeline.Status.conditions:type_name -> api.proto.v1alpha1.LongRunningOperation.Pipeline.Status.Condition
+	8,  // 6: api.proto.v1alpha1.LongRunningOperation.Pipeline.Status.last_synched_time:type_name -> google.protobuf.Timestamp
+	8,  // 7: api.proto.v1alpha1.LongRunningOperation.Pipeline.Status.Condition.last_transition_time:type_name -> google.protobuf.Timestamp
+	1,  // 8: api.proto.v1alpha1.LongRunningOperationService.GetOperation:input_type -> api.proto.v1alpha1.GetOperationRequest
+	9,  // 9: api.proto.v1alpha1.LongRunningOperationService.ListOperations:input_type -> google.protobuf.Empty
+	0,  // 10: api.proto.v1alpha1.LongRunningOperationService.GetOperation:output_type -> api.proto.v1alpha1.LongRunningOperation
+	2,  // 11: api.proto.v1alpha1.LongRunningOperationService.ListOperations:output_type -> api.proto.v1alpha1.ListOperationsResponse
+	10, // [10:12] is the sub-list for method output_type
+	8,  // [8:10] is the sub-list for method input_type
+	8,  // [8:8] is the sub-list for extension type_name
+	8,  // [8:8] is the sub-list for extension extendee
+	0,  // [0:8] is the sub-list for field type_name
 }
 
 func init() { file_api_proto_v1alpha1_longrunningoperation_proto_init() }
@@ -221,7 +512,7 @@ func file_api_proto_v1alpha1_longrunningoperation_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_proto_v1alpha1_longrunningoperation_proto_rawDesc), len(file_api_proto_v1alpha1_longrunningoperation_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

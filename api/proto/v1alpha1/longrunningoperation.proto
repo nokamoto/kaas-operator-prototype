@@ -2,7 +2,9 @@ syntax = "proto3";
 
 package api.proto.v1alpha1;
 
+import "google/protobuf/any.proto";
 import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/nokamoto/kaas-operator-prototype/pkg/api/proto/v1alpha1;v1alpha1";
 
@@ -19,6 +21,29 @@ message LongRunningOperation {
   // Required. The unique identifier for the operation.
   // This field is read-only and is set by the system.
   string name = 1;
+  bool done = 2;
+  google.protobuf.Any metadata = 3;
+  google.protobuf.Any response = 4;
+
+  message Pipeline {
+    message Spec {
+      string name = 1;
+      string displayName = 2;
+      string description = 3;
+    }
+    message Status {
+      message Condition {
+        string message = 1;
+        google.protobuf.Timestamp last_transition_time = 2;
+      }
+      string phase = 1;
+      repeated Condition conditions = 2;
+      google.protobuf.Timestamp last_synched_time = 3;
+    }
+    string namespace = 1;
+    Spec spec = 2;
+    Status status = 3;
+  }
 }
 
 message GetOperationRequest {
