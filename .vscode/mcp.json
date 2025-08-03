@@ -4,6 +4,20 @@
 			"type": "stdio",
 			"command": "mcpserver",
 			"args": []
+		},
+		"serena-mcp-server": {
+			"type": "stdio",
+			"command": "./.venv/bin/uvx",
+			"args": [
+				"--from",
+				"git+https://github.com/oraios/serena",
+				"serena",
+				"start-mcp-server",
+				"--context",
+				"ide-assistant",
+				"--project",
+				"."
+			]
 		}
 	},
 	"inputs": []
