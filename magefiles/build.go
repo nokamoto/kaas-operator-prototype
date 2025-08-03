@@ -77,3 +77,8 @@ func (Build) Mock() error {
 func (Build) InstallMCPServer() error {
 	return sh.RunV("go", "install", "./cmd/mcpserver")
 }
+
+// Generate runs all the generate commands for the project.
+func (Build) Generate() error {
+	return sh.RunV("go", "generate", "./...")
+}

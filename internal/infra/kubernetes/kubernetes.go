@@ -12,8 +12,13 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
+// TypedClient provides typed access to Kubernetes resources.
+//
+// Get methods return the resource type directly, or ErrResourceNotFound if the resource does not exist.
 type TypedClient struct {
-	client client.Client
+	pl  objectClient[*v1alpha1.Pipeline]
+	kc  objectClient[*v1alpha1.KubernetesCluster]
+	kcc objectClient[*v1alpha1.KubernetesClusterConfiguration]
 }
 
 func newDefaultRestConfig() (*rest.Config, error) {
@@ -47,13 +52,38 @@ func New() (*TypedClient, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to create client: %w", err)
 	}
-	return &TypedClient{client: c}, nil
+	return &TypedClient{
+		pl: objectClient[*v1alpha1.Pipeline]{
+			client: c,
+			typ:    "Pipeline",
+		},
+		kc: objectClient[*v1alpha1.KubernetesCluster]{
+			client: c,
+			typ:    "KubernetesCluster",
+		},
+		kcc: objectClient[*v1alpha1.KubernetesClusterConfiguration]{
+			client: c,
+			typ:    "KubernetesClusterConfiguration",
+		},
+	}, nil
 }
 
 // CreatePipeline creates a new Pipeline resource in the Kubernetes cluster.
 func (c *TypedClient) CreatePipeline(ctx context.Context, pipeline *v1alpha1.Pipeline) error {
-	if err := c.client.Create(ctx, pipeline); err != nil {
-		return fmt.Errorf("failed to create pipeline: %w", err)
-	}
-	return nil
+	return c.pl.create(ctx, pipeline)
+}
+
+// GetPipeline retrieves a Pipeline resource by its name and namespace.
+func (c *TypedClient) GetPipeline(ctx context.Context, name, namespace string) (*v1alpha1.Pipeline, error) {
+	return c.pl.get(ctx, name, namespace)
+}
+
+// GetKubernetesCluster retrieves a KubernetesCluster resource by its name and namespace.
+func (c *TypedClient) GetKubernetesCluster(ctx context.Context, name, namespace string) (*v1alpha1.KubernetesCluster, error) {
+	return c.kc.get(ctx, name, namespace)
+}
+
+// GetKubernetesClusterConfiguration retrieves a KubernetesClusterConfiguration resource by its name and namespace.
+func (c *TypedClient) GetKubernetesClusterConfiguration(ctx context.Context, name, namespace string) (*v1alpha1.KubernetesClusterConfiguration, error) {
+	return c.kcc.get(ctx, name, namespace)
 }

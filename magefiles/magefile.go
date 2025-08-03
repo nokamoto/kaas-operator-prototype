@@ -41,6 +41,7 @@ func Install() error {
 func All() {
 	mg.SerialDeps(
 		Install,
+		Build.Generate,
 		Build.ControllerGenCRD,
 		Build.ControllerGenObject,
 		Build.ControllerGenRBAC,

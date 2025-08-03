@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.36.6
 // 	protoc        (unknown)
-// source: api/proto/v1alpha1/cluster_service.proto
+// source: api/proto/v1alpha1/cluster.proto
 
 package v1alpha1
 
@@ -42,7 +42,7 @@ type Cluster struct {
 
 func (x *Cluster) Reset() {
 	*x = Cluster{}
-	mi := &file_api_proto_v1alpha1_cluster_service_proto_msgTypes[0]
+	mi := &file_api_proto_v1alpha1_cluster_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -54,7 +54,7 @@ func (x *Cluster) String() string {
 func (*Cluster) ProtoMessage() {}
 
 func (x *Cluster) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_v1alpha1_cluster_service_proto_msgTypes[0]
+	mi := &file_api_proto_v1alpha1_cluster_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -67,7 +67,7 @@ func (x *Cluster) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Cluster.ProtoReflect.Descriptor instead.
 func (*Cluster) Descriptor() ([]byte, []int) {
-	return file_api_proto_v1alpha1_cluster_service_proto_rawDescGZIP(), []int{0}
+	return file_api_proto_v1alpha1_cluster_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *Cluster) GetName() string {
@@ -101,7 +101,7 @@ type CreateClusterRequest struct {
 
 func (x *CreateClusterRequest) Reset() {
 	*x = CreateClusterRequest{}
-	mi := &file_api_proto_v1alpha1_cluster_service_proto_msgTypes[1]
+	mi := &file_api_proto_v1alpha1_cluster_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -113,7 +113,7 @@ func (x *CreateClusterRequest) String() string {
 func (*CreateClusterRequest) ProtoMessage() {}
 
 func (x *CreateClusterRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_v1alpha1_cluster_service_proto_msgTypes[1]
+	mi := &file_api_proto_v1alpha1_cluster_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -126,7 +126,7 @@ func (x *CreateClusterRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateClusterRequest.ProtoReflect.Descriptor instead.
 func (*CreateClusterRequest) Descriptor() ([]byte, []int) {
-	return file_api_proto_v1alpha1_cluster_service_proto_rawDescGZIP(), []int{1}
+	return file_api_proto_v1alpha1_cluster_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *CreateClusterRequest) GetCluster() *Cluster {
@@ -146,7 +146,7 @@ type GetClusterRequest struct {
 
 func (x *GetClusterRequest) Reset() {
 	*x = GetClusterRequest{}
-	mi := &file_api_proto_v1alpha1_cluster_service_proto_msgTypes[2]
+	mi := &file_api_proto_v1alpha1_cluster_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -158,7 +158,7 @@ func (x *GetClusterRequest) String() string {
 func (*GetClusterRequest) ProtoMessage() {}
 
 func (x *GetClusterRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_v1alpha1_cluster_service_proto_msgTypes[2]
+	mi := &file_api_proto_v1alpha1_cluster_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -171,7 +171,7 @@ func (x *GetClusterRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetClusterRequest.ProtoReflect.Descriptor instead.
 func (*GetClusterRequest) Descriptor() ([]byte, []int) {
-	return file_api_proto_v1alpha1_cluster_service_proto_rawDescGZIP(), []int{2}
+	return file_api_proto_v1alpha1_cluster_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *GetClusterRequest) GetName() string {
@@ -191,7 +191,7 @@ type ListClustersResponse struct {
 
 func (x *ListClustersResponse) Reset() {
 	*x = ListClustersResponse{}
-	mi := &file_api_proto_v1alpha1_cluster_service_proto_msgTypes[3]
+	mi := &file_api_proto_v1alpha1_cluster_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -203,7 +203,7 @@ func (x *ListClustersResponse) String() string {
 func (*ListClustersResponse) ProtoMessage() {}
 
 func (x *ListClustersResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_v1alpha1_cluster_service_proto_msgTypes[3]
+	mi := &file_api_proto_v1alpha1_cluster_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -216,7 +216,7 @@ func (x *ListClustersResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListClustersResponse.ProtoReflect.Descriptor instead.
 func (*ListClustersResponse) Descriptor() ([]byte, []int) {
-	return file_api_proto_v1alpha1_cluster_service_proto_rawDescGZIP(), []int{3}
+	return file_api_proto_v1alpha1_cluster_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *ListClustersResponse) GetClusters() []*Cluster {
@@ -236,7 +236,7 @@ type DeleteClusterRequest struct {
 
 func (x *DeleteClusterRequest) Reset() {
 	*x = DeleteClusterRequest{}
-	mi := &file_api_proto_v1alpha1_cluster_service_proto_msgTypes[4]
+	mi := &file_api_proto_v1alpha1_cluster_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -248,7 +248,7 @@ func (x *DeleteClusterRequest) String() string {
 func (*DeleteClusterRequest) ProtoMessage() {}
 
 func (x *DeleteClusterRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_api_proto_v1alpha1_cluster_service_proto_msgTypes[4]
+	mi := &file_api_proto_v1alpha1_cluster_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -261,7 +261,7 @@ func (x *DeleteClusterRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteClusterRequest.ProtoReflect.Descriptor instead.
 func (*DeleteClusterRequest) Descriptor() ([]byte, []int) {
-	return file_api_proto_v1alpha1_cluster_service_proto_rawDescGZIP(), []int{4}
+	return file_api_proto_v1alpha1_cluster_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *DeleteClusterRequest) GetName() string {
@@ -271,11 +271,11 @@ func (x *DeleteClusterRequest) GetName() string {
 	return ""
 }
 
-var File_api_proto_v1alpha1_cluster_service_proto protoreflect.FileDescriptor
+var File_api_proto_v1alpha1_cluster_proto protoreflect.FileDescriptor
 
-const file_api_proto_v1alpha1_cluster_service_proto_rawDesc = "" +
+const file_api_proto_v1alpha1_cluster_proto_rawDesc = "" +
 	"\n" +
-	"(api/proto/v1alpha1/cluster_service.proto\x12\x12api.proto.v1alpha1\x1a-api/proto/v1alpha1/longrunningoperation.proto\x1a\x1bgoogle/protobuf/empty.proto\"b\n" +
+	" api/proto/v1alpha1/cluster.proto\x12\x12api.proto.v1alpha1\x1a-api/proto/v1alpha1/longrunningoperation.proto\x1a\x1bgoogle/protobuf/empty.proto\"b\n" +
 	"\aCluster\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12!\n" +
 	"\fdisplay_name\x18\x02 \x01(\tR\vdisplayName\x12 \n" +
@@ -296,19 +296,19 @@ const file_api_proto_v1alpha1_cluster_service_proto_rawDesc = "" +
 	"\rDeleteCluster\x12(.api.proto.v1alpha1.DeleteClusterRequest\x1a(.api.proto.v1alpha1.LongRunningOperationBMZKgithub.com/nokamoto/kaas-operator-prototype/pkg/api/proto/v1alpha1;v1alpha1b\x06proto3"
 
 var (
-	file_api_proto_v1alpha1_cluster_service_proto_rawDescOnce sync.Once
-	file_api_proto_v1alpha1_cluster_service_proto_rawDescData []byte
+	file_api_proto_v1alpha1_cluster_proto_rawDescOnce sync.Once
+	file_api_proto_v1alpha1_cluster_proto_rawDescData []byte
 )
 
-func file_api_proto_v1alpha1_cluster_service_proto_rawDescGZIP() []byte {
-	file_api_proto_v1alpha1_cluster_service_proto_rawDescOnce.Do(func() {
-		file_api_proto_v1alpha1_cluster_service_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_api_proto_v1alpha1_cluster_service_proto_rawDesc), len(file_api_proto_v1alpha1_cluster_service_proto_rawDesc)))
+func file_api_proto_v1alpha1_cluster_proto_rawDescGZIP() []byte {
+	file_api_proto_v1alpha1_cluster_proto_rawDescOnce.Do(func() {
+		file_api_proto_v1alpha1_cluster_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_api_proto_v1alpha1_cluster_proto_rawDesc), len(file_api_proto_v1alpha1_cluster_proto_rawDesc)))
 	})
-	return file_api_proto_v1alpha1_cluster_service_proto_rawDescData
+	return file_api_proto_v1alpha1_cluster_proto_rawDescData
 }
 
-var file_api_proto_v1alpha1_cluster_service_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
-var file_api_proto_v1alpha1_cluster_service_proto_goTypes = []any{
+var file_api_proto_v1alpha1_cluster_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_api_proto_v1alpha1_cluster_proto_goTypes = []any{
 	(*Cluster)(nil),              // 0: api.proto.v1alpha1.Cluster
 	(*CreateClusterRequest)(nil), // 1: api.proto.v1alpha1.CreateClusterRequest
 	(*GetClusterRequest)(nil),    // 2: api.proto.v1alpha1.GetClusterRequest
@@ -317,7 +317,7 @@ var file_api_proto_v1alpha1_cluster_service_proto_goTypes = []any{
 	(*emptypb.Empty)(nil),        // 5: google.protobuf.Empty
 	(*LongRunningOperation)(nil), // 6: api.proto.v1alpha1.LongRunningOperation
 }
-var file_api_proto_v1alpha1_cluster_service_proto_depIdxs = []int32{
+var file_api_proto_v1alpha1_cluster_proto_depIdxs = []int32{
 	0, // 0: api.proto.v1alpha1.CreateClusterRequest.cluster:type_name -> api.proto.v1alpha1.Cluster
 	0, // 1: api.proto.v1alpha1.ListClustersResponse.clusters:type_name -> api.proto.v1alpha1.Cluster
 	1, // 2: api.proto.v1alpha1.ClusterService.CreateCluster:input_type -> api.proto.v1alpha1.CreateClusterRequest
@@ -335,9 +335,9 @@ var file_api_proto_v1alpha1_cluster_service_proto_depIdxs = []int32{
 	0, // [0:2] is the sub-list for field type_name
 }
 
-func init() { file_api_proto_v1alpha1_cluster_service_proto_init() }
-func file_api_proto_v1alpha1_cluster_service_proto_init() {
-	if File_api_proto_v1alpha1_cluster_service_proto != nil {
+func init() { file_api_proto_v1alpha1_cluster_proto_init() }
+func file_api_proto_v1alpha1_cluster_proto_init() {
+	if File_api_proto_v1alpha1_cluster_proto != nil {
 		return
 	}
 	file_api_proto_v1alpha1_longrunningoperation_proto_init()
@@ -345,17 +345,17 @@ func file_api_proto_v1alpha1_cluster_service_proto_init() {
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_proto_v1alpha1_cluster_service_proto_rawDesc), len(file_api_proto_v1alpha1_cluster_service_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_proto_v1alpha1_cluster_proto_rawDesc), len(file_api_proto_v1alpha1_cluster_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_api_proto_v1alpha1_cluster_service_proto_goTypes,
-		DependencyIndexes: file_api_proto_v1alpha1_cluster_service_proto_depIdxs,
-		MessageInfos:      file_api_proto_v1alpha1_cluster_service_proto_msgTypes,
+		GoTypes:           file_api_proto_v1alpha1_cluster_proto_goTypes,
+		DependencyIndexes: file_api_proto_v1alpha1_cluster_proto_depIdxs,
+		MessageInfos:      file_api_proto_v1alpha1_cluster_proto_msgTypes,
 	}.Build()
-	File_api_proto_v1alpha1_cluster_service_proto = out.File
-	file_api_proto_v1alpha1_cluster_service_proto_goTypes = nil
-	file_api_proto_v1alpha1_cluster_service_proto_depIdxs = nil
+	File_api_proto_v1alpha1_cluster_proto = out.File
+	file_api_proto_v1alpha1_cluster_proto_goTypes = nil
+	file_api_proto_v1alpha1_cluster_proto_depIdxs = nil
 }

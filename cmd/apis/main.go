@@ -20,12 +20,13 @@ func main() {
 		os.Exit(1)
 	}
 	clusterService := cluster.New(client, &namegen.Namegen{})
+	longrunningoperationService := longrunningoperation.New(client)
 
 	// Create HTTP server
 	mux := http.NewServeMux()
 	path, handler := v1alpha1connect.NewClusterServiceHandler(clusterService)
 	mux.Handle(path, handler)
-	path, handler = v1alpha1connect.NewLongRunningOperationServiceHandler(longrunningoperation.LongRunningOperationService{})
+	path, handler = v1alpha1connect.NewLongRunningOperationServiceHandler(longrunningoperationService)
 	mux.Handle(path, handler)
 
 	addr := os.Getenv("ADDR")
