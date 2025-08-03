@@ -31,9 +31,19 @@ type LongRunningOperation struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Required. The unique identifier for the operation.
 	// This field is read-only and is set by the system.
-	Name          string     `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	Done          bool       `protobuf:"varint,2,opt,name=done,proto3" json:"done,omitempty"`
-	Metadata      *anypb.Any `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	// Indicates whether the operation has completed.
+	// If true, the operation is done and the response field contains the result.
+	// This field is read-only and is set by the system.
+	Done bool `protobuf:"varint,2,opt,name=done,proto3" json:"done,omitempty"`
+	// Metadata contains any additional information about the operation.
+	// Typically, this is set to a Pipeline object that describes the progress of the operation.
+	// This field is read-only and is set by the system.
+	Metadata *anypb.Any `protobuf:"bytes,3,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	// Response contains the result of the operation if it is done.
+	// This field is read-only and is set by the system.
+	// The type of the response is typically a Cluster object that contains the details of the created cluster.
+	// If the operation is failed, this field is Empty and metadata contains the error details.
 	Response      *anypb.Any `protobuf:"bytes,4,opt,name=response,proto3" json:"response,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -187,10 +197,14 @@ func (x *ListOperationsResponse) GetOperations() []*LongRunningOperation {
 	return nil
 }
 
+// Pipeline represents the current state of the operation for cluster creation.
 type LongRunningOperation_Pipeline struct {
-	state         protoimpl.MessageState                `protogen:"open.v1"`
-	Namespace     string                                `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
-	Spec          *LongRunningOperation_Pipeline_Spec   `protobuf:"bytes,2,opt,name=spec,proto3" json:"spec,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The namespace in which the operation is being performed.
+	Namespace string `protobuf:"bytes,1,opt,name=namespace,proto3" json:"namespace,omitempty"`
+	// The spec contains the details of the operation.
+	Spec *LongRunningOperation_Pipeline_Spec `protobuf:"bytes,2,opt,name=spec,proto3" json:"spec,omitempty"`
+	// The status contains the current status of the operation.
 	Status        *LongRunningOperation_Pipeline_Status `protobuf:"bytes,3,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -248,10 +262,13 @@ func (x *LongRunningOperation_Pipeline) GetStatus() *LongRunningOperation_Pipeli
 }
 
 type LongRunningOperation_Pipeline_Spec struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	DisplayName   string                 `protobuf:"bytes,2,opt,name=displayName,proto3" json:"displayName,omitempty"`
-	Description   string                 `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The name of the cluster being created.
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	// The display name of the cluster.
+	DisplayName string `protobuf:"bytes,2,opt,name=displayName,proto3" json:"displayName,omitempty"`
+	// A description of the cluster.
+	Description   string `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -308,10 +325,13 @@ func (x *LongRunningOperation_Pipeline_Spec) GetDescription() string {
 }
 
 type LongRunningOperation_Pipeline_Status struct {
-	state           protoimpl.MessageState                            `protogen:"open.v1"`
-	Phase           string                                            `protobuf:"bytes,1,opt,name=phase,proto3" json:"phase,omitempty"`
-	Conditions      []*LongRunningOperation_Pipeline_Status_Condition `protobuf:"bytes,2,rep,name=conditions,proto3" json:"conditions,omitempty"`
-	LastSynchedTime *timestamppb.Timestamp                            `protobuf:"bytes,3,opt,name=last_synched_time,json=lastSynchedTime,proto3" json:"last_synched_time,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The phase indicates the current phase of the operation.
+	Phase string `protobuf:"bytes,1,opt,name=phase,proto3" json:"phase,omitempty"`
+	// Conditions provide additional information about the operation's status.
+	Conditions []*LongRunningOperation_Pipeline_Status_Condition `protobuf:"bytes,2,rep,name=conditions,proto3" json:"conditions,omitempty"`
+	// The last synched time indicates when the operation was last updated.
+	LastSynchedTime *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=last_synched_time,json=lastSynchedTime,proto3" json:"last_synched_time,omitempty"`
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
 }
@@ -368,8 +388,10 @@ func (x *LongRunningOperation_Pipeline_Status) GetLastSynchedTime() *timestamppb
 }
 
 type LongRunningOperation_Pipeline_Status_Condition struct {
-	state              protoimpl.MessageState `protogen:"open.v1"`
-	Message            string                 `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// The message provides a human-readable description of the condition.
+	Message string `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
+	// The last transition time indicates when the condition last changed.
 	LastTransitionTime *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=last_transition_time,json=lastTransitionTime,proto3" json:"last_transition_time,omitempty"`
 	unknownFields      protoimpl.UnknownFields
 	sizeCache          protoimpl.SizeCache

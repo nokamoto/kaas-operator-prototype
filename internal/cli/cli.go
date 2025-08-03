@@ -20,7 +20,7 @@ func New() *cobra.Command {
 	})
 	cmd.AddCommand(
 		cluster.New(r),
-		logrunningoperation.New(),
+		logrunningoperation.New(r),
 	)
 	return cmd
 }

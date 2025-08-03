@@ -10,25 +10,16 @@ import (
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 	mockv1alpha1 "github.com/nokamoto/kaas-operator-prototype/internal/mock/mock_v1alpha1connect"
 	"github.com/nokamoto/kaas-operator-prototype/pkg/api/proto/v1alpha1"
-	"github.com/nokamoto/kaas-operator-prototype/pkg/api/proto/v1alpha1/v1alpha1connect"
 	"go.uber.org/mock/gomock"
 )
 
-type mockRuntime struct {
-	mock *mockv1alpha1.MockClusterServiceClient
-}
-
-func (m *mockRuntime) ClusterService() v1alpha1connect.ClusterServiceClient {
-	return m.mock
-}
-
-func TestCreateTool_Handler(t *testing.T) {
+func TestCreateClusterTool_Handler(t *testing.T) {
 	testDisplayName := "test-cluster"
 	testDescription := "This is a test cluster."
 	testOperationName := "test-operation"
 	type testcase struct {
 		name    string
-		request ClusterCreateRequest
+		request CreateClusterRequest
 		mock    func(*mockv1alpha1.MockClusterServiceClient)
 		want    *mcp.CallToolResultFor[any]
 		wantErr error
@@ -36,7 +27,7 @@ func TestCreateTool_Handler(t *testing.T) {
 	tests := []testcase{
 		{
 			name: "cluster creation successfully started",
-			request: ClusterCreateRequest{
+			request: CreateClusterRequest{
 				DisplayName: testDisplayName,
 				Description: testDescription,
 			},
@@ -68,11 +59,11 @@ func TestCreateTool_Handler(t *testing.T) {
 				tt.mock(m)
 			}
 
-			tool := CreateTool{
-				r: &mockRuntime{mock: m},
+			tool := CreateClusterTool{
+				r: &mockRuntime{c: m},
 			}
 
-			params := &mcp.CallToolParamsFor[ClusterCreateRequest]{
+			params := &mcp.CallToolParamsFor[CreateClusterRequest]{
 				Arguments: tt.request,
 			}
 			got, err := tool.Handler(context.TODO(), nil, params)

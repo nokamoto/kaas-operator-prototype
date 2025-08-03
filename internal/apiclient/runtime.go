@@ -31,3 +31,10 @@ func (r *Runtime) ClusterService() v1alpha1connect.ClusterServiceClient {
 		r.lazyBaseURL(),
 	)
 }
+
+func (r *Runtime) LongRunningOperationService() v1alpha1connect.LongRunningOperationServiceClient {
+	return v1alpha1connect.NewLongRunningOperationServiceClient(
+		r.httpClient(),
+		r.lazyBaseURL(),
+	)
+}
