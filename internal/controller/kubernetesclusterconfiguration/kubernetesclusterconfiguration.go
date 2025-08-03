@@ -50,7 +50,7 @@ func (r *KubernetesClusterConfigurationReconciler) Reconcile(ctx context.Context
 	switch kcc.Status.Phase {
 	case v1alpha1.KubernetesClusterConfigurationPhaseCreating:
 		// Create the KubernetesClusterConfigurationConfigMap if it does not exist
-		logger.Info("Createing KubernetesClusterConfigurationConfigMap if it does not exist")
+		logger.Info("Creating KubernetesClusterConfigurationConfigMap if it does not exist")
 		name := kcc.Name
 		kccm := &v1alpha1.KubernetesClusterConfigurationConfigMap{}
 		if err := r.Get(ctx, client.ObjectKey{Namespace: kcc.Namespace, Name: name}, kccm); err != nil {
